@@ -9,7 +9,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:8000',
-  'https://spacematch-new.vercel.app',
+  'https://spacematch-beta.vercel.app',
   'https://spacematch.com.ng',
   'http://spacematch.com.ng'
 ];
@@ -21,7 +21,7 @@ const allowedDevOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:8000',
-  'https://spacematch-new.vercel.app',
+  'https://spacematch-beta.vercel.app',
   'https://spacematch.com.ng',
   'http://spacematch.com.ng'
 ];
