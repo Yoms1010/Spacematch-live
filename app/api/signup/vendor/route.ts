@@ -1,5 +1,6 @@
 
 import axiosClient from "@/axios-server";
+import axios from "axios";
 import { NextResponse } from "next/server";
 import { toast } from "react-toastify";
 
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
       refund_policy
     };
         // 4. Make the request
-      const res = await axiosClient.post(apiEndpoint, options)
+      const res = await axios.post(apiEndpoint, options)
       // console.log(res);  
 
       if (res.status === 201) {
