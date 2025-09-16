@@ -235,11 +235,12 @@ const NavBar = ({user}: {user: any}) => {
                   {
                     user 
                     ?
-                    <Image
+                    <img
                       alt=""
                       src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${user.photo}`}
-                      width={40}
-                      height={40}
+                      // src={``}
+                      // width={40}
+                      // height={40}
                       className="size-8 rounded-full"
                     />
                     :
@@ -284,28 +285,6 @@ const NavBar = ({user}: {user: any}) => {
           </div>
         </div>
       </div>
-
-      {/* <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pb-3 pt-2">
-          {topBarLinks.map((item) => {
-            const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`)
-            return (
-                <DisclosureButton
-                key={item.label}
-                as="a"
-                href={item.route}
-                aria-current={isActive ? 'page' : undefined}
-                className={classNames(
-                    isActive ? 'bg-gray-200 text-gray-800' : 'text-gray-800 hover:bg-gray-500 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium',
-                )}
-                >
-                    {item.label}
-                </DisclosureButton>
-            )
-            })}
-        </div>
-      </DisclosurePanel> */}
     </Disclosure>
   )
 }

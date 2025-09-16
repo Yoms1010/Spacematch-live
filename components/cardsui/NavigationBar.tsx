@@ -13,7 +13,7 @@ function NavigationBar() {
   return (
     <>
       {
-      !pathname.includes("/in/")
+      !pathname.includes("/in")
       &&
       <nav className="bg-white shadow-md fixed w-full z-10 rounded-bl-2xl rounded-br-2xl">
         <div className="container mx-auto px-6 py-4">
@@ -30,10 +30,10 @@ function NavigationBar() {
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">
-              <Link href="/" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-125 ${pathname === "/" ? "bg-gradient-to-r from-smred-100 via-blue-200 to-main-100 inline-block text-transparent bg-clip-text scale-125 font-semibold" : ""}`}>Home</Link>
+              <Link href="/" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-125 ${pathname === "/" ? "text-main-100 scale-125 font-semibold" : ""}`}>Home</Link>
               <a href="/#how-it-works" className="text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110"> How It Works</a>
               <a href="/#vendors" className="text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110">Our Vendors</a>
-              <Link href="/products" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/products/" || pathname.startsWith(`/products/`) ? "bg-gradient-to-r from-smred-100 via-blue-200 to-main-100 inline-block text-transparent bg-clip-text scale-125 font-semibold" : ""}`}>Products</Link>
+              <Link href="/products" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/products/" || pathname.startsWith(`/products/`) ? "text-main-100 scale-125 font-semibold" : ""}`}>Products</Link>
               <Link href="/property/search" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/property/" || pathname.startsWith(`/property/`) ? "bg-gradient-to-r from-smred-100 via-black-1 to-main-100 inline-block text-transparent bg-clip-text scale-110 font-semibold" : ""}`}>Properties</Link>
             </div>
             <div className="hidden md:flex items-center space-x-4">

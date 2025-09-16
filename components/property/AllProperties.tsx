@@ -13,7 +13,7 @@ function AllProperties({properties}: {properties: any}) {
           properties.map((item: any, i: Key) => (
             <Link key={i} href={`/property/${item.id}`} className="flex-shrink-0 w-full bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="">
-                <Image
+                <img
                   src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${item.property_image[0].path}`} 
                   width={100}
                   height={100}
@@ -35,7 +35,6 @@ function AllProperties({properties}: {properties: any}) {
           ))
         }
       </div>
-      <Footer/>
     </section>
   )
 }

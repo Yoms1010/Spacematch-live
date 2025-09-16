@@ -1,8 +1,8 @@
 
 import AgentSettings from '@/components/AgentSettings'
 import BuyerSettings from '@/components/BuyerSettings'
-import DeveloperSettings from '@/components/DeveloperSettings'
 import HeaderBox from '@/components/HeaderBox'
+import VendorProfileCompletion from '@/components/settings/VendorProfileCompletion'
 import { getAgentById, getBuyerById, getDeveloperById } from '@/lib/actions/customers.actions'
 import { getAuthenticatedUser } from '@/lib/actions/user.action'
 import { User } from '@/types'
@@ -43,7 +43,7 @@ switch (userRole) {
         subtext='User Details and Settings'
       />
 
-        {userRole === "Developer" && <DeveloperSettings user={user} developer={developer}/>}
+        {userRole === "Developer" && <VendorProfileCompletion userData={user} vendor={developer}/>} {/* <DeveloperSettings user={user} developer={developer}/> */}
         {userRole === "Buyer" && <BuyerSettings user={user} buyer={buyer}/>}
         {userRole === "Agent" && <AgentSettings user={user} agent={agent}/>}
     </div>

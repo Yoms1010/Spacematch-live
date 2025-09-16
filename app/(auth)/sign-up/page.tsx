@@ -1,14 +1,10 @@
 'use client'
 
 
+import VendorSignUp from '@/components/signup/VendorSignUp';
 import { countryCodes } from '@/constants';
-import { clientOccupations, legalContent, vendorTypes } from '@/constants/main';
-import { checkPasswordStrength } from '@/lib/utils';
-import axios from 'axios';
-import { Eye, EyeOff, Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { clientOccupations, legalContent} from '@/constants/main';
+import React, {  useState } from 'react';
 
 const LegalModal = ({ onClose, content }: {onClose: any, content: any}) => {
   return (
@@ -33,161 +29,8 @@ const LegalModal = ({ onClose, content }: {onClose: any, content: any}) => {
 const SignUp = () => {
   const [showForm, setShowForm] = useState<string| null>(null);
   const [showLegalModal, setShowLegalModal] = useState<boolean|null>(null);
-  const [isVendorAgreed, setIsVendorAgreed] = useState(false);
   const [isClientAgreed, setIsClientAgreed] = useState(false);
-  const [isPasswordShown, setIsPasswordShown] = useState<boolean>(false)
-  const [loading, setLoading] = useState(false)
-  const [strength, setStrength] = useState({ score: 0, label: '' });
-  // const [openModal, setOpenModal] = useState<boolean>(false)
-  // const [modalOpen, setModalOpen] = useState<boolean>(false)
 
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        password: "",
-        business_name: "",
-        mobile: "",
-        vendor_type: "",
-        terms_and_conditions: "",
-        refund_policy: ""
-      })
-    const codeRef = useRef<any>(null)
-    const router = useRouter()
-
-
-    const handlePasswordChange = (e: any) => {
-      const newPassword = e.target.value;
-      setForm({...form, password: newPassword});
-      setStrength(checkPasswordStrength(newPassword));
-    };
-
-        // A sub-component for the visual strength bar
-    const PasswordStrengthMeter = ({ score }: any) => {
-      const getBarColor = () => {
-        switch (score) {
-          case 0:
-            return 'bg-gray-300'; // No input
-          case 1:
-            return 'bg-red-500'; // Weak
-          case 2:
-            return 'bg-orange-500'; // Medium
-          case 3:
-            return 'bg-yellow-500'; // Strong
-          case 4:
-          case 5:
-            return 'bg-green-500'; // Very Strong
-          default:
-            return 'bg-gray-300';
-        }
-      };
-
-      // Width is 20% for each point of score
-      const barWidth = `${score * 20}%`;
-
-      return (
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-          <div
-            className={`h-2.5 rounded-full transition-all duration-300 ease-in-out ${getBarColor()}`}
-            style={{ width: barWidth }}
-          ></div>
-        </div>
-      );
-    };
-
-    const handleVendorSignUp = async (e: any) => {
-      e.preventDefault();
-        try {
-          const payLoad = {
-            name: form.name,
-            email: form.email,
-            code: codeRef.current.value,
-            mobile: form.mobile,
-            password: form.password,
-            business_name: form.business_name,
-            developer_type: form.vendor_type,
-            terms_and_conditions: isVendorAgreed && "Yes",
-            refund_policy: isVendorAgreed && "Yes"
-          }
-
-          if (/[A-Z]/.test(form.password) && /[0-9]/.test(form.password) && /[^A-Za-z0-9]/.test(form.password)) {
-            console.log("✅ The string meets all criteria.");
-          } else {
-            console.log("❌ The string is missing a required character type.");
-            return toast.error("❌ Your password is missing the required character(s).");
-          }
-
-          setLoading(true)
-          const res = await axios.post("/api/signup/vendor", payLoad)
-          console.log(res);
-          setLoading(false)
-          const response = res;
-          if (response.status === 200) {
-            if(response.data.status === 201){
-              toast.success("Account successfully created. Redirecting...")
-              router.push("/sign-in")
-            }else if (response.data.errorData.status === 422) {
-              toast.error("That email has already been taken")
-            }else{
-              toast.error("Kindly check your network connection")
-            }
-          }
-        } catch (error: any) {
-          setLoading(false)
-          console.log(error);
-          if (error.status === 403) {
-            toast.error("Error: A network error occured")
-          }
-          toast.error("Error: An error occured, please contact support team.")
-        }
-    }
-
-    // const handleSignUp = (e: any) => {
-    //   e.preventDefault();
-    //     const payLoad = {
-    //       name: form.name,
-    //       email: form.email,
-    //       code: codeRef.current.value,
-    //       mobile: form.mobile,
-    //       password: form.password,
-    //       business_name: form.business_name,
-    //       developer_type: form.vendor_type,
-    //       terms_and_conditions: isVendorAgreed && "Yes",
-    //       refund_policy: isVendorAgreed && "Yes"
-    //     }
-  
-    //     // return console.log(payLoad);
-
-    //     setLoading(true);
-    //     axiosClient.post("/signup/developer", payLoad)
-    //     .then((data) => {
-    //       setLoading(false);
-    //       if (data.status == 201) {
-    //         setSuccessMsg(true)
-    //       }
-    //     }) 
-    //     .catch(err => {
-    //       setLoading(false);
-    //       console.log(err)
-    //       const response = err.response;
-    //           if (response && response.status === 422) {
-    //                   setLoading(false)
-    //                   setErrorNotify("An error occurred, kindly fix it before you can proceed.")
-    //                   // console.log(data);
-    //               if (response.data.errors) {
-    //                       setErrors(response.data.errors)
-    //                       console.log(response.data.errors);
-                          
-    //               }else{
-    //                   setErrors({
-    //                       email: [response.data.msg]
-    //                   })
-    //               }
-    //           }else{
-    //             setLoading(false)
-    //             setErrorNotify("Oops!! Some errors occurred.")
-    //           }
-    //     })
-    //   }
 
   const renderForm = () => {
     switch (showForm) {
@@ -321,134 +164,7 @@ const SignUp = () => {
         );
       case 'vendor':
         return (
-          <form onSubmit={handleVendorSignUp} className="p-6 bg-white rounded-xl shadow-lg w-full max-w-3xl mt-20">
-              <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Vendor Sign Up</h2>
-              <div className="space-y-4">
-                  <div className='grid grid-cols-2 max-sm:grid-cols-1 gap-3'>
-                  <div>
-                      <label className="block text-sm font-medium text-gray-700">Name</label>
-                      <input 
-                        type="text" 
-                        name='name'
-                        onChange={(e: any) => setForm({...form, name: e.target.value})} 
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" placeholder="John Doe" 
-                        required
-                      />
-                  </div>
-                  <div>
-                      <label className="block text-sm font-medium text-gray-700">Email</label>
-                      <input 
-                        type="email" 
-                        name="email"
-                        onChange={(e: any) => setForm({...form, email: e.target.value})} 
-                        placeholder="you@example.com" 
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100"
-                        required
-                      />
-                  </div>
-                  </div>
-                  <div>
-                  <label className="block text-sm font-medium text-gray-700">Business Name</label>
-                  <input
-                   type="text" 
-                   name='business_name'
-                   onChange={(e: any) => setForm({...form, business_name: e.target.value})} 
-                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" 
-                   placeholder="Your Company Inc." 
-                  />
-                  </div>
-                  <div>
-                  <label className="block text-sm font-medium text-gray-700">Contact Number</label>
-                  <div className="mt-1 flex rounded-md shadow-sm">
-                      <select ref={codeRef} className="p-2 border border-gray-300 rounded-l-md focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700 w-[30%]" required>
-                      {countryCodes.map((c, index) => (
-                          <option key={`${c.code}-${index}`} value={c.code}>{c.code} {c.name}</option>
-                      ))}
-                      </select>
-                      <input type="tel" onChange={(e: any) => setForm({...form, mobile: e.target.value})} className="flex-1 block w-full p-2 border border-gray-300 rounded-r-md focus:ring-main-100 focus:border-main-100" placeholder="e.g., 809 554 6085" />
-                  </div>
-                  </div>
-                  <div>
-                  <label className="block text-sm font-medium text-gray-700">Vendor Type</label>
-                  <select onChange={(e: any) => setForm({...form, vendor_type: e.target.value})} className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700" required>
-                      <option value="">Select Option</option>
-                      {vendorTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
-                      ))}
-                  </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Password</label>
-                    <div className='flex justify-center items-center px-2 focus:ring-main-100 focus:border-main-100 border border-gray-300'>
-                      <input 
-                        type={isPasswordShown ? "text" : "password"} 
-                        onChange={(e: any) => handlePasswordChange(e)} 
-                        className="mt-1 block w-full p-1 rounded-md shadow-sm focus:outline-none" 
-                        required
-                      />
-                      <div onClick={() => setIsPasswordShown(!isPasswordShown)}>
-                        {
-                          isPasswordShown
-                          ?
-                          <Eye/>
-                          :
-                          <EyeOff/>
-                        }
-                      </div>
-                    </div>
-                    {/* Password Strength Indicator */}
-                      {form.password.length > 0 && (
-                        <div className="mt-2">
-                          <PasswordStrengthMeter score={strength.score} />
-                          <p className="text-sm text-right font-medium mt-1 text-gray-600">
-                            Strength: <span className="font-bold">{strength.label}</span>
-                          </p>
-                        </div>
-                      )}
-                      <p className='text-red-500 mt-2'>Password must be atleast 8 characters, including Upercase, special characters and numbers</p>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                  <input 
-                      type="checkbox" 
-                      id="agreeTerms" 
-                      name="agreeTerms" 
-                      checked={isVendorAgreed}
-                      onChange={(e) => setIsVendorAgreed(e.target.checked)}
-                      className="h-4 w-4 text-main-100 border-gray-300 rounded focus:ring-main-100"
-                      required
-                  />
-                  <label htmlFor="agreeTerms" className="text-sm text-gray-700">
-                      This means that you agree with the <button type="button" onClick={() => setShowLegalModal(true)} className="text-main-100 hover:underline font-semibold">SpaceMatch terms and conditions</button>
-                  </label>
-                  </div>
-              </div>
-
-              {/* <div className='my-5'>
-                  {errors && <div className='bg-red-800 p-2 mt-3 rounded-md text-white shadow-lg'>
-                      {Object.keys(errors).map(key => (
-                          <p key={key}>{errors[key][0]}</p>
-                      ))}
-                  </div>
-                }
-              </div> */}
-              <button 
-                  type="submit" 
-                  disabled={!isVendorAgreed}
-                  className={`flex justify-center items-center w-full mt-6 py-3 px-4 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-main-100 focus:ring-offset-2 transition-all duration-200 ${isVendorAgreed ? 'bg-main-100 hover:bg-main-100' : 'bg-gray-400 cursor-not-allowed'}`}
-              >
-                  {
-                    loading
-                    ?
-                    <Loader className='animate-spin'/>
-                    :
-                    "Sign Up as Vendor"
-                  }
-              </button>
-              <button onClick={() => setShowForm(null)} className="w-full mt-3 py-2 text-main-100 font-semibold rounded-md hover:underline">
-                  Back
-              </button>
-          </form>
+          <VendorSignUp showForm={showForm} setShowForm={setShowForm} showLegalModal={showLegalModal} setShowLegalModal={setShowLegalModal}/>
         );
       case 'client':
         return (
@@ -556,3 +272,124 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+
+{/* <form onSubmit={handleVendorSignUp} className="p-6 bg-white rounded-xl shadow-lg w-full max-w-3xl mt-20">
+    <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Vendor Sign Up</h2>
+    <div className="space-y-4">
+        <div className='grid grid-cols-2 max-sm:grid-cols-1 gap-3'>
+        <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input 
+              type="text" 
+              name='name'
+              onChange={(e: any) => setForm({...form, name: e.target.value})} 
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" placeholder="John Doe" 
+              required
+            />
+        </div>
+        <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input 
+              type="email" 
+              name="email"
+              onChange={(e: any) => setForm({...form, email: e.target.value})} 
+              placeholder="you@example.com" 
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100"
+              required
+            />
+        </div>
+        </div>
+        <div>
+        <label className="block text-sm font-medium text-gray-700">Business Name</label>
+        <input
+          type="text" 
+          name='business_name'
+          onChange={(e: any) => setForm({...form, business_name: e.target.value})} 
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" 
+          placeholder="Your Company Inc." 
+        />
+        </div>
+        <div>
+        <label className="block text-sm font-medium text-gray-700">Contact Number</label>
+        <div className="mt-1 flex rounded-md shadow-sm">
+            <select ref={codeRef} className="p-2 border border-gray-300 rounded-l-md focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700 w-[30%]" required>
+            {countryCodes.map((c, index) => (
+                <option key={`${c.code}-${index}`} value={c.code}>{c.code} {c.name}</option>
+            ))}
+            </select>
+            <input type="tel" onChange={(e: any) => setForm({...form, mobile: e.target.value})} className="flex-1 block w-full p-2 border border-gray-300 rounded-r-md focus:ring-main-100 focus:border-main-100" placeholder="e.g., 809 554 6085" />
+        </div>
+        </div>
+        <div>
+        <label className="block text-sm font-medium text-gray-700">Vendor Type</label>
+        <select onChange={(e: any) => setForm({...form, vendor_type: e.target.value})} className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700" required>
+            <option value="">Select Option</option>
+            {vendorTypes.map(type => (
+            <option key={type} value={type}>{type}</option>
+            ))}
+        </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Password</label>
+          <div className='flex justify-center items-center px-2 focus:ring-main-100 focus:border-main-100 border border-gray-300'>
+            <input
+              type={isPasswordShown ? "text" : "password"} 
+              onChange={(e: any) => handlePasswordChange(e)} 
+              className="mt-1 block w-full p-1 rounded-md shadow-sm focus:outline-none" 
+              required
+            />
+            <div onClick={() => setIsPasswordShown(!isPasswordShown)}>
+              {
+                isPasswordShown
+                ?
+                <Eye/>
+                :
+                <EyeOff/>
+              }
+            </div>
+          </div>
+
+            {form.password.length > 0 && (
+              <div className="mt-2">
+                <PasswordStrengthMeter score={strength.score} />
+                <p className="text-sm text-right font-medium mt-1 text-gray-600">
+                  Strength: <span className="font-bold">{strength.label}</span>
+                </p>
+              </div>
+            )}
+            <p className='text-red-500 mt-2'>Password must be atleast 8 characters, including Upercase, special characters and numbers</p>
+        </div>
+
+        <div className="flex items-center space-x-2">
+        <input 
+            type="checkbox" 
+            id="agreeTerms" 
+            name="agreeTerms" 
+            checked={isVendorAgreed}
+            onChange={(e) => setIsVendorAgreed(e.target.checked)}
+            className="h-4 w-4 text-main-100 border-gray-300 rounded focus:ring-main-100"
+            required
+        />
+        <label htmlFor="agreeTerms" className="text-sm text-gray-700">
+            This means that you agree with the <button type="button" onClick={() => setShowLegalModal(true)} className="text-main-100 hover:underline font-semibold">SpaceMatch terms and conditions</button>
+        </label>
+        </div>
+    </div>
+    <button 
+        type="submit" 
+        disabled={!isVendorAgreed}
+        className={`flex justify-center items-center w-full mt-6 py-3 px-4 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-main-100 focus:ring-offset-2 transition-all duration-200 ${isVendorAgreed ? 'bg-main-100 hover:bg-main-100' : 'bg-gray-400 cursor-not-allowed'}`}
+    >
+        {
+          loading
+          ?
+          <Loader className='animate-spin'/>
+          :
+          "Sign Up as Vendor"
+        }
+    </button>
+    <button onClick={() => setShowForm(null)} className="w-full mt-3 py-2 text-main-100 font-semibold rounded-md hover:underline">
+        Back
+    </button>
+</form> */}

@@ -183,7 +183,7 @@ const DeveloperProfile = ({developer, subscriptionPlan}: any) => {
                               Proof of Ownership
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            { developer && <Image
+                            { developer && <img
                               src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${POOpath}`}
                               width={30}
                               height={30}
@@ -197,7 +197,7 @@ const DeveloperProfile = ({developer, subscriptionPlan}: any) => {
                               CAC Document
                           </dt>
                           <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                          { developer && <Image
+                          { developer && <img
                               src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${CACpath}`}
                               width={30}
                               height={30}

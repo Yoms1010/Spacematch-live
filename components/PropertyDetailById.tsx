@@ -130,7 +130,7 @@ const ImageModal = ({ src, onClose }: {src: string, onClose: any}) => {
           <div className="grid grid-cols-4 grid-rows-2 gap-2 h-96 mb-8">
             {/* Main Image */}
             <div className="col-span-4 md:col-span-2 row-span-2 rounded-lg overflow-hidden shadow-xl">
-                <Image 
+                <img
                   src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property_image[0].path}`} 
                   width={500}
                   height={300}
@@ -142,7 +142,7 @@ const ImageModal = ({ src, onClose }: {src: string, onClose: any}) => {
             {/* Thumbnails */}
             {property_image.slice(1).map((item: any, index: number) => (
                 <div key={index} className="col-span-2 md:col-span-1 rounded-lg overflow-hidden">
-                    <Image 
+                    <img
                       src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${item.path}`} 
                       width={500}
                       height={300}

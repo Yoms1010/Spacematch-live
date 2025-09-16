@@ -12,7 +12,6 @@ const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    // const [errors, setErrors] = useState<any>()
     const [loading, setLoading] = useState(false)
     // const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
     const {setUser, token, setToken} = useStateContext()

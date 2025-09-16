@@ -50,7 +50,7 @@ const PropertyById = ({id}: PropertyIdProps) => {
             {
               property 
               && 
-              <Image
+              <img
                 src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[0].path}`}
                 width={200}
                 height={400}
@@ -68,7 +68,7 @@ const PropertyById = ({id}: PropertyIdProps) => {
                 {
                     property
                     &&
-                  <Image
+                  <img
                     src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[1].path}`}
                     width={200}
                     height={400}
@@ -85,7 +85,7 @@ const PropertyById = ({id}: PropertyIdProps) => {
                 {
                     property
                     &&
-                  <Image
+                  <img
                     src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[2].path}`}
                     width={200}
                     height={400}
@@ -102,7 +102,7 @@ const PropertyById = ({id}: PropertyIdProps) => {
                 {
                     property
                     &&
-                  <Image
+                  <img
                     src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[3].path}`}
                     width={200}
                     height={400}
@@ -119,7 +119,7 @@ const PropertyById = ({id}: PropertyIdProps) => {
                   {
                     property
                     &&
-                    <Image
+                    <img
                       src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[4].path}`}
                       width={200}
                       height={400}

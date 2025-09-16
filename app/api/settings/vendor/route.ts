@@ -1,108 +1,112 @@
 
 import axiosClient from "@/axios-server";
 import { getToken } from "@/lib/actions/user.action";
-import axios from "axios";
-import { NextResponse } from "next/server";
+import fs, { writeFile } from 'fs/promises';
+import path from 'path';
+
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // 2. Get data and secrets
-    // const resp = await req.json()
-    // return console.log(resp);
-    
     const formData = await req.formData();
-        const vendorId = formData.get("vendorId"); 
-        const name = formData.get("name"); 
-        const email = formData.get("email"); 
-        const business_name = formData.get("business_name"); 
-        const mobile = formData.get("mobile"); 
-        const city = formData.get("city"); 
-        const lga = formData.get("lga"); 
-        const state = formData.get("state"); 
-        const country = formData.get("country"); 
-        const developer_type = formData.get("developer_type"); 
-        const areas_of_operation = formData.get("areas_of_operation"); 
-        const developer_reg_no = formData.get("developer_reg_no"); 
-        const tin = formData.get("tin");
-        const certifications = formData.get("certifications"); 
-        const bio = formData.get("bio"); 
-        const proof_of_ownership = formData.get("proof_of_ownership");
-        const cac = formData.get("cac");
-        const profile_photo = formData.get("profile_photo");   
+    const vendorId = formData.get("vendorId"); 
+
+    const ninf: File | null = formData.get('nin') as unknown as File;
+    const bizRegDoc: File | null = formData.get('business_reg_doc') as unknown as File;
+    const profilePhoto: File | null = formData.get('profile_photo') as unknown as File;
+
+    if (!ninf || !bizRegDoc || !profilePhoto) {
+      return NextResponse.json({ success: false, message: 'No file found.' }, { status: 400 });
+    }
+
+    // return console.log(formData);
+
+    // 1. Get the file data as a buffer
+    const ninBytes = await ninf.arrayBuffer();
+    const bizRegDocBytes = await bizRegDoc.arrayBuffer();
+    const profilePhotoBytes = await profilePhoto.arrayBuffer();
+    const ninBuffer = Buffer.from(ninBytes);
+    const bizRegDocBuffer = Buffer.from(bizRegDocBytes);
+    const profilePhotoBuffer = Buffer.from(profilePhotoBytes);
+
+
+    // 2. Define the path where the file will be saved
+    // We'll save it in the `public/uploads` directory.
+    const uploadsDir = path.join(process.cwd(), 'public/vendor/docs');
+    const dpDir = path.join(process.cwd(), 'public/vendor/dp');
+    const ninFilePath = path.join(uploadsDir, ninf.name);
+    const bizRegDocFilePath = path.join(uploadsDir, bizRegDoc.name);
+    const profilePhotoFilePath = path.join(dpDir, profilePhoto.name);
+
+    // Note: In a real app, you'd want to sanitize the filename
+    // to prevent path traversal attacks.
+
+    // 3. Write the file to the filesystem
+    await writeFile(ninFilePath, ninBuffer);
+    await writeFile(bizRegDocFilePath, bizRegDocBuffer);
+    await writeFile(profilePhotoFilePath, profilePhotoBuffer);
+    // console.log(`File saved to: ${filePath}`);
+
+    // 3. Create a Blob from the buffer
+    const ninFileBlob = new Blob([ninBuffer], { type: ninf.type });
+    const bizRegDocFileBlob = new Blob([bizRegDocBuffer], { type: bizRegDoc.type });
+    const profilePhotoFileBlob = new Blob([profilePhotoBuffer], { type: profilePhoto.type });
+    formData.delete("nin");
+    formData.delete("business_reg_doc");
+    formData.delete("profile_photo");
+
+    formData.append("nin", ninFileBlob, ninf.name);
+    formData.append("business_reg_doc",bizRegDocFileBlob, bizRegDoc.name);
+    formData.append("profile_photo", profilePhotoFileBlob, profilePhoto.name);
     
     const apiKey = getToken()
     const apiEndpoint = `${process.env.BACKEND_DEVELOPMENT_API}/developer/${vendorId}`;
     
     if (!apiEndpoint || !apiKey) {
-        console.error("Server configuration error.");
-        return NextResponse.json({ error: 'Server configuration error.' });
+      console.error("Server configuration error.");
+      return NextResponse.json({ error: 'Server configuration error.' });
     }
-
-    // 3. Prepare the request for the third-party API
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: formData
-    };
-
-    const payLoad = {
-      name,
-      email,
-      business_name ,
-      mobile,
-      city,
-      lga,
-      state ,
-      country,
-      developer_type,
-      areas_of_operation, 
-      developer_reg_no,
-      tin,
-      certifications, 
-      bio,
-      proof_of_ownership: formData.get("proof_of_ownership"),
-      cac: formData.get("cac"),
-      profile_photo: formData.get("profile_photo")
-    }
-
-    // console.log(payLoad);
-    
     //     // 4. Make the request
-      const res = await axiosClient.post(`/developer/${vendorId}`, payLoad)
+      const res = await axiosClient.post(apiEndpoint, formData)
       // console.log(res);
+        const response = res.data
+        // console.log(response);
+        return NextResponse.json({'message': response.status, 'data': JSON.stringify(response)})
+
       // .then((response) => {
-      //       console.log(response)
-      //     })
-      //     .catch(err => {
-      //       console.log(err)
-      //       const response = err.response;
-      //         if (response && response.status === 422) {
-      //             const errors = response.data.errors;
-      //           if (errors) {
-      //             const newErrors = Object.keys(errors).map((key: any)=> (
-      //               errors[key][0]
-      //             ))
-      //             // console.log(response.data.errors)
-      //             console.log(newErrors)
-      //             return NextResponse.json({errors: JSON.stringify(newErrors)});
-      //           }else{
-      //             console.log(response.data.msg);
-      //           }
-      //         }else{
-                  
-      //         }
-      //     })
+      //   console.log(response)
+      //   const res = response.data
+      //   return NextResponse.json(JSON.stringify(res))
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      //   const response = err.response;
+      //   console.log(response);
+        
+      //     if (response && response.status === 422) {
+      //         const errors = response.data.errors;
+      //       if (errors) {
+      //         const newErrors = Object.keys(errors).map((key: any)=> (
+      //           errors[key][0]
+      //         ))
+      //         // console.log(response.data.errors)
+      //         console.log(newErrors)
+      //         return NextResponse.json({errors: JSON.stringify(newErrors)});
+      //       }else{
+      //         console.log(response.data.msg);
+      //       }
+      //     }else{
+              
+      //     }
+      // })
 
 
-      if (res.status === 201) {
-        console.log(res);
-        const data = JSON.stringify(res.data);
-        return NextResponse.json({status: 201, msg: "Successful", resData: data})
-      }
+      // if (res.status === 201) {
+      //   console.log(res);
+      //   // const data = JSON.stringify(res.data);
+      //   return NextResponse.json({status: 201, msg: "Successful", resData: res})
+      // }
       
   } catch (error) {
     console.error("Error in proxy API route:", error);
