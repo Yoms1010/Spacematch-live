@@ -202,7 +202,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     bankName: '',
   });
   const [isLoading, setIsLoading] = useState(false)
-  const {acc_name, acc_number, bank_name} = vendor.bank_details || {acc_name: "null", acc_number: "null", bank_name: "null"};
+  const {acc_name, acc_number, bank_name} = vendor.bank_details || {acc_name: undefined, acc_number: undefined, bank_name: undefined};
   const { id, business_name, business_email, business_address, business_phone, business_reg_no, business_type,service_offering, nin, business_reg_doc, profile_photo} = vendor.data;
 
       // console.log(vendor);
@@ -221,10 +221,11 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
+  // console.log(formData);
+  
 
   const handleFinalSubmit = async (e: any) => {
     e.preventDefault();
-
     try {
       const formsData = new FormData()
       formsData.append("vendorId", id);
@@ -357,6 +358,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 type="file"
                 name="nin"
                 // defaultValue={formData.nin || nin}
+                accept="image/*"
                 onChange={handleFileChange}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -368,6 +370,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 type="file"
                 name="bizRegDoc"
                 // defaultValue={formData.bizRegDoc || business_reg_doc}
+                accept="image/*"
                 onChange={handleFileChange}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -379,6 +382,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 type="file"
                 name="profilePhoto"
                 // defaultValue={formData.profilePhoto || profile_photo}
+                accept="image/*"
                 onChange={handleFileChange}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -408,7 +412,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankAccountName"
-              value={formData.bankAccountName || acc_name}
+              defaultValue={formData.bankAccountName || acc_name}
               onChange={handleChange}
               placeholder="Account Name"
               required
@@ -417,7 +421,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankAccountNumber"
-              value={formData.bankAccountNumber || acc_number}
+              defaultValue={formData.bankAccountNumber || acc_number}
               onChange={handleChange}
               placeholder="Account Number"
               required
@@ -426,7 +430,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankName"
-              value={formData.bankName || bank_name}
+              defaultValue={formData.bankName || bank_name}
               onChange={handleChange}
               placeholder="Bank Name"
               required
