@@ -12,7 +12,7 @@ const allowedOrigins = [
   'http://127.0.0.1:8000',
   'https://spacematch-beta.vercel.app',
   'https://spacematch.com.ng',
-  'http://spacematch.com.ng'
+  'http://api.spacematch.com.ng'
 ];
 
 // Add your development origins here.
@@ -24,7 +24,7 @@ const allowedDevOrigins = [
   'http://127.0.0.1:8000',
   'https://spacematch-beta.vercel.app',
   'https://spacematch.com.ng',
-  'http://spacematch.com.ng'
+  'http://api.spacematch.com.ng'
 ];
 
 export function middleware(request: NextRequest) {

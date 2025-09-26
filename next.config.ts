@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       remotePatterns: [
         {
           protocol: "https",
-          hostname: "api.teechng.com",
+          hostname: "api.spacematch.com.ng",
           port: "",
           pathname: "/api/storage/**",
         },
