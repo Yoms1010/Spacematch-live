@@ -33,19 +33,20 @@ export async function POST(req: NextRequest) {
 
     // 2. Define the path where the file will be saved
     // We'll save it in the `public/uploads` directory.
-    const uploadsDir = path.join(process.cwd(), 'public/vendor/docs');
-    const dpDir = path.join(process.cwd(), 'public/vendor/dp');
-    const ninFilePath = path.join(uploadsDir, ninf.name);
-    const bizRegDocFilePath = path.join(uploadsDir, bizRegDoc.name);
-    const profilePhotoFilePath = path.join(dpDir, profilePhoto.name);
+    // const uploadsDir = path.join(process.cwd(), '/vendor/docs');
+    // const uploadsDir2 = path.join(process.cwd(), '/vendor/docs');
+    // const dpDir = path.join(process.cwd(), '/vendor/dp');
+    // const ninFilePath = path.join(uploadsDir, ninf.name);
+    // const bizRegDocFilePath = path.join(uploadsDir2, bizRegDoc.name);
+    // const profilePhotoFilePath = path.join(dpDir, profilePhoto.name);
 
     // Note: In a real app, you'd want to sanitize the filename
     // to prevent path traversal attacks.
 
     // 3. Write the file to the filesystem
-    await writeFile(ninFilePath, ninBuffer);
-    await writeFile(bizRegDocFilePath, bizRegDocBuffer);
-    await writeFile(profilePhotoFilePath, profilePhotoBuffer);
+    // await writeFile(ninFilePath, ninBuffer);
+    // await writeFile(bizRegDocFilePath, bizRegDocBuffer);
+    // await writeFile(profilePhotoFilePath, profilePhotoBuffer);
     // console.log(`File saved to: ${filePath}`);
 
     // 3. Create a Blob from the buffer
