@@ -5,12 +5,10 @@ import { BellIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { User } from '@/types'
 import { FaSignOutAlt } from 'react-icons/fa'
 import { IoSettings } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import axiosClient from '@/axios-client'
-import Image from 'next/image'
 import { useStateContext } from '@/context/ContextProvider'
 import { logout } from '@/lib/actions/user.action'
 
@@ -20,66 +18,26 @@ const NavBar = ({user}: {user: any}) => {
 
       const router = useRouter()
       const [day, setDay] = useState(true)
-      const [buyerChatCount, setBuyerChatCount] = useState<any>()
-      const [agentChatCount, setAgentChatCount] = useState<any>()
-      const [buyerChatNotice, setBuyerChatNotice] = useState<any>()
-      const [agentChatNotice, setAgentChatNotice] = useState<any>()
       const {token, setToken} = useStateContext()
     
       const onThemeClick = () => {
         setDay(!day);
       }
 
-      useEffect(() => {
-        axiosClient.get("/current-buyer-chat-count")
-        .then((data) => {
-          setBuyerChatCount(data.data)
-        })
-        .catch(err => {
-          console.log(err); 
-        })
-      }, [])
-
-
-      useEffect(() => {
-        axiosClient.get("/current-agent-chat-count")
-        .then((data) => {
-          setAgentChatCount(data.data)
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }, [])
-
-      
-      useEffect(() => {
-        axiosClient.get("/notification-buyer-chat")
-        .then((data) => {
-           setBuyerChatNotice(data.data)
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }, [])
-
-
-      useEffect(() => {
-        axiosClient.get("/notification-agent-chat")
-        .then((data) => {
-           setAgentChatNotice(data.data)
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }, [])
 
       const onSignOut = async () => {
-
         await logout()
           typeof window && window.localStorage.removeItem('ACCESS_TOKEN');
           setToken("")
           // typeof window && window.location.reload()
           return router.replace("/sign-in")
+      }
+
+      if (!user) {
+        typeof window !== 'undefined' && window.localStorage.removeItem('ACCESS_TOKEN');
+        setToken("")
+          // typeof window && window.location.reload()
+        return router.replace("/sign-in")
       }
     
 
@@ -100,7 +58,7 @@ const NavBar = ({user}: {user: any}) => {
             <div
               className="relative rounded-full bg-main-100 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-logoRed focus:ring-offset-2 focus:ring-offset-logoRed"
             >
-              {
+              {/* {
                 user?.whoId?.split(";")[0] == "Buyer" && buyerChatCount > 0
                   ?
                 <span className="absolute right-2 -top-2 -inset-1.5 bg-red-500 rounded-full flex justify-center items-center h-5 w-5 font-semibold">
@@ -112,7 +70,7 @@ const NavBar = ({user}: {user: any}) => {
                   <p>{agentChatCount && agentChatCount}</p>  
                 </span>
                 
-              }
+              } */}
               <span className="sr-only">View notifications</span>
               
               <Menu as="div" className="relative ml-3">
@@ -127,7 +85,7 @@ const NavBar = ({user}: {user: any}) => {
                 transition
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
-                {
+                {/* {
                   user && user.whoId.split(";")[0] == "Buyer"
                   ?
                   (
@@ -221,7 +179,7 @@ const NavBar = ({user}: {user: any}) => {
                       </MenuItem>
                   ))
                   )
-                }
+                } */}
               </MenuItems>
             </Menu>
             </div>

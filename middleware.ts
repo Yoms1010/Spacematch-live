@@ -7,9 +7,6 @@ import type { NextRequest } from 'next/server';
 const allowedOrigins = [
   'https://api.teechng.com',
   'http://api.teechng.com',
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:8000',
   'https://www.spacematch-beta.vercel.app',
   'https://www.spacematch.com.ng',
   'https://api.spacematch.com.ng'

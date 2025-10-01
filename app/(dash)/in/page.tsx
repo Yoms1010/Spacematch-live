@@ -10,7 +10,6 @@ import Buyer from '@/sections/Buyer';
 import Developer from '@/sections/Developer';
 import SuperAdmin from '@/sections/SuperAdmin';
 import Image from 'next/image'
-import { redirect } from 'next/navigation';
 
 
 // Best Practice: Define a type for your user object to avoid using 'any'.
@@ -36,8 +35,6 @@ const Home = async () => {
   const properties = await getAllProperties()
   const isUserAthenticated = await isAthenticated()
 
-
-  if (!isUserAthenticated) redirect("/sign-in")
 
   // Render a single, centralized loading state.
   if (!user) {
