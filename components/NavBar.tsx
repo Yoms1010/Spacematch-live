@@ -1,14 +1,12 @@
 'use client'
 
 import { Disclosure, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { BellIcon, ChatBubbleBottomCenterIcon} from '@heroicons/react/24/outline'
+import { BellIcon} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { FaSignOutAlt } from 'react-icons/fa'
 import { IoSettings } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
-import axiosClient from '@/axios-client'
 import { useStateContext } from '@/context/ContextProvider'
 import { logout } from '@/lib/actions/user.action'
 
@@ -17,12 +15,8 @@ import { logout } from '@/lib/actions/user.action'
 const NavBar = ({user}: {user: any}) => {
 
       const router = useRouter()
-      const [day, setDay] = useState(true)
       const {token, setToken} = useStateContext()
     
-      const onThemeClick = () => {
-        setDay(!day);
-      }
 
 
       const onSignOut = async () => {

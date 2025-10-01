@@ -212,7 +212,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
       toast.warning('Submitting profile for verification...');
       const res = await fetch(`/api/settings/vendor`, payLoad)
       const response = await res.json()
-      // console.log(response)
+      console.log(response)
       setIsLoading(false)
       if (response.message == "success") {
         toast.success("Profile data submitted... We would get back to you when. Please proceed.")
@@ -222,6 +222,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
           typeof window != undefined && window.localStorage.setItem("currentView", 'verification-pending')
         }, 1000)
       }
+      toast.error("An error occurred")
       
     } catch (error) {
       setIsLoading(false)
