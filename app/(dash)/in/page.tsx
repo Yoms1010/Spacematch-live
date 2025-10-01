@@ -4,12 +4,13 @@ import HeaderBox from '@/components/HeaderBox';
 import { buyerData } from '@/constants';
 import { getAgents, getClients, getVendors } from '@/lib/actions/customers.actions';
 import { getAllProperties, getVendorProperties } from '@/lib/actions/property.action';
-import { getAuthenticatedUser } from '@/lib/actions/user.action';
+import { getAuthenticatedUser, isAthenticated } from '@/lib/actions/user.action';
 import Agent from '@/sections/Agent';
 import Buyer from '@/sections/Buyer';
 import Developer from '@/sections/Developer';
 import SuperAdmin from '@/sections/SuperAdmin';
 import Image from 'next/image'
+import { redirect } from 'next/navigation';
 
 
 // Best Practice: Define a type for your user object to avoid using 'any'.
@@ -33,6 +34,10 @@ const Home = async () => {
   const vendors = await getVendors()
   const agents = await getAgents()
   const properties = await getAllProperties()
+  const isUserAthenticated = await isAthenticated()
+
+
+  if (!isUserAthenticated) redirect("/sign-in")
 
   // Render a single, centralized loading state.
   if (!user) {

@@ -1,30 +1,19 @@
-'use client'
-
-
-import axios from 'axios';
-import { Loader } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 
 // This is the main component for the Next.js page, orchestrating the entire vendor application flow.
 // In a real-world Next.js application, each of these "views" would likely be a separate page
 // in the `pages` directory, and navigation would be handled by the Next.js router.
-const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any}) => {
-  const [currentView, setCurrentView] = useState(typeof window !== 'undefined' ? window.localStorage.getItem("currentView") : 'profile-setup');
+const VendorPortal = () => {
+  const [currentView, setCurrentView] = useState('registration');
   const [user, setUser] = useState(null); // Represents the logged-in user
   const [isVerified, setIsVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentCampaign, setCurrentCampaign] = useState(null);
-
-  const {id, email} = vendor.data;
-  // console.log(vendor.data);
-  
 
   // In a real application, this would be a real-time listener from Firebase Authentication and Firestore.
   useEffect(() => {
     // Mock user login for demonstration purposes
-    const mockUser: any = {
+    const mockUser = {
       id: 'user_12345',
       name: 'John Doe',
       isVerified: false,
@@ -33,63 +22,34 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
     setUser(mockUser);
   }, []);
 
-
-  const handleSubscription = async (tier: any) => {
-    switch (tier) {
-      case "Standard":
-        onSquadcoPay("Standard", 10000, "NGN")
-        break;
-    
-      default:
-        break;
-    }
+  const handleRegistration = (formData) => {
+    console.log('Registering user:', formData);
+    setCurrentView('onboarding');
+  };
+  
+  const handleSignIn = (formData) => {
+    console.log('Signing in user:', formData);
+    // In a real app, you would validate credentials here
+    setCurrentView('dashboard');
   };
 
+  const handleProfileSubmission = (formData) => {
+    console.log('Submitting profile for verification:', formData);
+    setCurrentView('verification-pending');
+    // Simulate a successful verification after a delay.
+    setTimeout(() => {
+      setIsVerified(true);
+      setCurrentView('dashboard');
+    }, 3000);
+  };
 
-  const onSquadcoPay = async (tier: string, price: number, currency: string) => {
-    const requestData = {
-        email: email, 
-        amount: price*100,
-        currency,
-      }
-      
-      setIsLoading(true)
-      //@ts-expect-error
-      const squadInstance = await new squad({
-          onClose: () => console.log("Widget closed"),
-          onLoad: () => console.log("Widget loaded successfully"),
-          onSuccess: (res: any) => {onSquadcoPaySuccess(res); console.log(`Linked successfully`, res);},
-          key: process.env.NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
-          email: requestData.email,
-          amount: requestData.amount,
-          currency_code: requestData.currency
-      });
-      squadInstance.setup();
-      squadInstance.open();
-      setIsLoading(false)
-  }
-  
-  const onSquadcoPaySuccess = async (res: any) => {
-      const payLoad = {
-          vendor_id: id,
-          vendor_sc_id: 2,
-          title: "Standard",
-          amount: res.amount/100,
-          currency: res.currency_code,
-          transaction_ref: res.transaction_ref,
-          payment_option: "card",
-          status: "successful",
-          active: "Yes"
-      }
+  const handleSubscription = (tier) => {
+    console.log('User subscribed to tier:', tier);
+    setIsSubscribed(true);
+    setCurrentView('dashboard');
+  };
 
-      const response = await axios.post("/api/squadcopay-vendor-sub", payLoad)
-      console.log(response);
-      // console.log('User subscribed to tier:', tier);
-      // setIsSubscribed(true);
-      // setCurrentView('dashboard');
-  }
-
-  const handleCreatePromotion = (campaignData: any) => {
+  const handleCreatePromotion = (campaignData) => {
     console.log('Creating new promotion:', campaignData);
     setCurrentCampaign(campaignData);
     setCurrentView('analytics');
@@ -98,34 +58,155 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
   // Helper function to render the correct view based on state
   const renderView = () => {
     switch (currentView) {
+      case 'registration':
+        return <RegistrationPage onRegister={handleRegistration} setCurrentView={setCurrentView} />;
+      case 'signin':
+        return <SignInPage onSignIn={handleSignIn} setCurrentView={setCurrentView} />;
+      case 'onboarding':
+        return <OnboardingPage setCurrentView={setCurrentView} />;
       case 'profile-setup':
-        return <ProfileSetupPage setCurrentView={setCurrentView} vendor={vendor}/>;
+        return <ProfileSetupPage onSubmit={handleProfileSubmission} />;
       case 'verification-pending':
-        return <VerificationPendingPage setCurrentView={setCurrentView} />;
+        return <VerificationPendingPage />;
       case 'dashboard':
         return <DashboardPage user={user} isVerified={isVerified} isSubscribed={isSubscribed} setCurrentView={setCurrentView} />;
       case 'subscription':
-        return <SubscriptionPage onSubscribe={handleSubscription} isLoading={isLoading}/>;
+        return <SubscriptionPage onSubscribe={handleSubscription} />;
       case 'promotion-creation':
         return <PromotionCreationPage onCreate={handleCreatePromotion} />;
       case 'analytics':
         return <AnalyticsPage campaign={currentCampaign} />;
       default:
-        return <OnboardingPage setCurrentView={setCurrentView} />;
+        return <RegistrationPage onRegister={handleRegistration} setCurrentView={setCurrentView} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 font-sans antialiased text-gray-800">
       <div className="container mx-auto max-w-2xl bg-white rounded-xl shadow-lg p-6">
+        <header className="flex justify-between items-center mb-6 border-b pb-4">
+          <h1 className="text-2xl font-bold text-purple-800">Vendor Portal</h1>
+          <nav className="flex space-x-4">
+            {user && (
+              <button onClick={() => setCurrentView('dashboard')} className="text-purple-600 hover:text-purple-800 transition-colors">
+                Dashboard
+              </button>
+            )}
+            <button onClick={() => setCurrentView('registration')} className="text-gray-600 hover:text-gray-800 transition-colors">
+              Sign Out
+            </button>
+          </nav>
+        </header>
         {renderView()}
       </div>
     </div>
   );
 };
 
+// All the individual components for each page of the flow are defined below.
+const RegistrationPage = ({ onRegister, setCurrentView }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
-const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onRegister({ email, password, name, phone });
+  };
+
+  return (
+    <div className="text-center p-8">
+      <h2 className="text-3xl font-bold mb-4">Vendor Registration</h2>
+      <p className="text-gray-600 mb-8">Create your account to start selling your properties.</p>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Full Name"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email Address"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Phone Number"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <button type="submit" className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2">
+          <span role="img" aria-label="sign-in">✅</span>
+          <span>Register Account</span>
+        </button>
+      </form>
+      <div className="mt-4">
+        <p className="text-gray-600">Already have an account? <button onClick={() => setCurrentView('signin')} className="text-purple-600 font-semibold hover:underline">Sign In</button></p>
+      </div>
+    </div>
+  );
+};
+
+const SignInPage = ({ onSignIn, setCurrentView }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSignIn({ email, password });
+  };
+
+  return (
+    <div className="text-center p-8">
+      <h2 className="text-3xl font-bold mb-4">Vendor Sign In</h2>
+      <p className="text-gray-600 mb-8">Welcome back! Sign in to continue managing your properties.</p>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email Address"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <button type="submit" className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2">
+          <span role="img" aria-label="sign-in">🔐</span>
+          <span>Sign In</span>
+        </button>
+      </form>
+      <div className="mt-4">
+        <p className="text-gray-600">Don't have an account? <button onClick={() => setCurrentView('registration')} className="text-purple-600 font-semibold hover:underline">Sign Up</button></p>
+      </div>
+    </div>
+  );
+};
+
+const OnboardingPage = ({ setCurrentView }) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4 text-purple-800">Welcome to the Vendor Portal!</h2>
     <p className="text-gray-600 mb-6">
@@ -143,8 +224,7 @@ const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
   </div>
 );
 
-const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, vendor: any}) => {
-
+const ProfileSetupPage = ({ onSubmit }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     businessName: '',
@@ -156,77 +236,27 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     serviceOfferings: '',
     nin: null,
     bizRegDoc: null,
-    profilePhoto: null,
     bankAccountName: '',
     bankAccountNumber: '',
     bankName: '',
   });
-  const [isLoading, setIsLoading] = useState(false)
-  const {acc_name, acc_number, bank_name} = vendor.bank_details || {acc_name: undefined, acc_number: undefined, bank_name: undefined};
-  const { id, business_name, business_email, business_address, business_phone, business_reg_no, business_type,service_offering, nin, business_reg_doc, profile_photo} = vendor.data;
-
-      // console.log(vendor);
-      
 
   const handleNextStep = () => setStep(step + 1);
   const handlePreviousStep = () => setStep(step - 1);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleFileChange = (e: any) => {
+  
+  const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  // console.log(formData);
-  
-
-  const handleFinalSubmit = async (e: any) => {
+  const handleFinalSubmit = (e) => {
     e.preventDefault();
-    try {
-      const formsData = new FormData()
-      formsData.append("vendorId", id);
-      formsData.append("business_name", formData.businessName || business_name);
-      formsData.append("business_email", formData.businessEmail || business_email);
-      formsData.append("business_address", formData.businessAddress || business_address);
-      formsData.append("business_phone", formData.businessPhone || business_phone);
-      formsData.append("business_reg_no", formData.businessRegNumber || business_reg_no);
-      formsData.append("business_type", formData.businessType || business_type);
-      formsData.append("acc_name", formData.bankAccountName || acc_name);
-      formsData.append("acc_number", formData.bankAccountNumber || acc_number);
-      formsData.append("bank_name", formData.bankName || bank_name);
-      formsData.append("service_offering", formData.serviceOfferings || service_offering);
-      formsData.append("nin", formData.nin || nin);
-      formsData.append("business_reg_doc", formData.bizRegDoc || business_reg_doc);
-      formsData.append("profile_photo", formData.profilePhoto || "");
-
-      // onSubmit(formsData);
-      const payLoad = {
-          method: 'POST',
-          body: formsData,
-        }
-      setIsLoading(true)
-      toast.warning('Submitting profile for verification...');
-      const res = await fetch(`/api/settings/vendor`, payLoad)
-      const response = await res.json()
-      // console.log(response)
-      setIsLoading(false)
-      if (response.message == "success") {
-        toast.success("Profile data submitted... We would get back to you when. Please proceed.")
-
-        setTimeout(() => {
-          setCurrentView('verification-pending')
-          typeof window != undefined && window.localStorage.setItem("currentView", 'verification-pending')
-        }, 1000)
-      }
-      
-    } catch (error) {
-      setIsLoading(false)
-      console.log(error);
-    }
+    onSubmit(formData);
   };
 
   const renderFormStep = () => {
@@ -239,7 +269,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="businessName"
-              defaultValue={business_name || formData.bankAccountName}
+              value={formData.businessName}
               onChange={handleChange}
               placeholder="Business Name"
               required
@@ -248,7 +278,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="businessAddress"
-              defaultValue={business_address || formData.businessAddress}
+              value={formData.businessAddress}
               onChange={handleChange}
               placeholder="Business Address"
               required
@@ -257,7 +287,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="tel"
               name="businessPhone"
-              defaultValue={business_phone||formData.businessPhone}
+              value={formData.businessPhone}
               onChange={handleChange}
               placeholder="Business Phone Number"
               required
@@ -266,7 +296,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="email"
               name="businessEmail"
-              defaultValue={business_email || formData.businessEmail}
+              value={formData.businessEmail}
               onChange={handleChange}
               placeholder="Business Email"
               required
@@ -275,7 +305,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="businessRegNumber"
-              defaultValue={business_reg_no || formData.businessRegNumber}
+              value={formData.businessRegNumber}
               onChange={handleChange}
               placeholder="Business Registration Number"
               required
@@ -284,7 +314,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="businessType"
-              defaultValue={business_type||formData.businessType}
+              value={formData.businessType}
               onChange={handleChange}
               placeholder="Business Type"
               required
@@ -292,11 +322,11 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             />
             <textarea
               name="serviceOfferings"
-              defaultValue={service_offering||formData.serviceOfferings}
+              value={formData.serviceOfferings}
               onChange={handleChange}
               placeholder="Service Offerings"
               required
-              rows={3}
+              rows="3"
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
             ></textarea>
             <button
@@ -310,15 +340,13 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">2. Uploads (KYC, Documents & Photo) </h3>
+            <h3 className="text-xl font-bold">2. KYC & Documents</h3>
             <p className="text-gray-600">Please upload documents for identity and business verification.</p>
             <label className="block">
               <span className="text-gray-700">National Identification Number (NIN) Document</span>
               <input
                 type="file"
                 name="nin"
-                // value={formData.nin || nin}
-                accept="image/*"
                 onChange={handleFileChange}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -329,20 +357,6 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
               <input
                 type="file"
                 name="bizRegDoc"
-                // value={formData.bizRegDoc || business_reg_doc}
-                accept="image/*"
-                onChange={handleFileChange}
-                required
-                className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-            </label>
-            <label className="block">
-              <span className="text-gray-700">Profile Picture</span>
-              <input
-                type="file"
-                name="profilePhoto"
-                // value={formData.profilePhoto || profile_photo}
-                accept="image/*"
                 onChange={handleFileChange}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -372,7 +386,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankAccountName"
-              defaultValue={formData.bankAccountName || acc_name}
+              value={formData.bankAccountName}
               onChange={handleChange}
               placeholder="Account Name"
               required
@@ -381,7 +395,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankAccountNumber"
-              defaultValue={formData.bankAccountNumber || acc_number}
+              value={formData.bankAccountNumber}
               onChange={handleChange}
               placeholder="Account Number"
               required
@@ -390,7 +404,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="bankName"
-              defaultValue={formData.bankName || bank_name}
+              value={formData.bankName}
               onChange={handleChange}
               placeholder="Bank Name"
               required
@@ -405,18 +419,10 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
               </button>
               <button
                 type="submit"
-                className="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2 w-[300px]"
+                className="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center space-x-2"
               >
-                {
-                  isLoading
-                  ?
-                  <Loader className='animate-spin'/>
-                  :
-                  <div className=' flex items-center justify-center space-x-2'>
-                    <span role="img" aria-label="upload">📤</span>
-                    <span>Submit for Verification</span>
-                  </div>
-                }
+                <span role="img" aria-label="upload">📤</span>
+                <span>Submit for Verification</span>
               </button>
             </div>
           </div>
@@ -430,7 +436,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Profile Setup & Verification</h2>
       <p className="text-sm text-gray-500 mb-6">Step {step} of 3</p>
-      <form onSubmit={handleFinalSubmit} encType='multipart/form-data'>
+      <form onSubmit={handleFinalSubmit}>
         {renderFormStep()}
       </form>
     </div>
@@ -438,38 +444,17 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
 };
 
 
-const VerificationPendingPage = ({ setCurrentView}: { setCurrentView: any}) => (
+const VerificationPendingPage = () => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4 text-yellow-600">Verification Pending</h2>
     <p className="text-gray-600 mb-6">Thank you for submitting your documents. We are currently reviewing your information. This may take a few moments.</p>
-    <div className="flex flex-col items-center justify-center gap-5">
+    <div className="flex justify-center">
       <div className="w-12 h-12 rounded-full border-4 border-gray-300 border-t-purple-500 animate-spin"></div>
-      <div className='flex justify-between items-center w-full'>
-        {/* <button
-          onClick={() => {
-            setCurrentView('verification-pending')
-            typeof window !== undefined && window.localStorage.setItem("currentView", 'verification-pending')
-          }}
-          className="w-[250px] bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-colors"
-        >
-          Previous
-        </button> */}
-        <button
-          onClick={() => {
-            setCurrentView('subscription')
-            typeof window !== undefined && window.localStorage.setItem("currentView", 'subscription')
-            typeof window !== undefined && window.location.reload()
-          }}
-          className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors"
-        >
-          I want to Proceed
-        </button>
-      </div>
     </div>
   </div>
 );
 
-const DashboardPage = ({ user, isVerified, isSubscribed, setCurrentView }: { user: any, isVerified: any, isSubscribed: any, setCurrentView: any }) => {
+const DashboardPage = ({ user, isVerified, isSubscribed, setCurrentView }) => {
   const renderDashboardContent = () => {
     if (!isVerified) {
       return (
@@ -519,14 +504,14 @@ const DashboardPage = ({ user, isVerified, isSubscribed, setCurrentView }: { use
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Vendor MiniDashboard</h2>
+      <h2 className="text-2xl font-bold mb-4">Vendor Dashboard</h2>
       <p className="text-sm text-gray-500 mb-6">Welcome, {user?.name || 'Vendor'}</p>
       {renderDashboardContent()}
     </div>
   );
 };
 
-const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoading: boolean}) => (
+const SubscriptionPage = ({ onSubscribe }) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
     <p className="text-gray-600 mb-8">Unlock powerful features to grow your business.</p>
@@ -541,16 +526,8 @@ const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoad
           <li className="flex items-center space-x-2"><span role="img" aria-label="checkmark">✔️</span><span>Create promotions</span></li>
         </ul>
         <button onClick={() => onSubscribe('Standard')} className="mt-6 w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors">
-          {
-            isLoading
-            ?
-            <Loader className='animate-spin'/>
-            :
-            <div>
-              <span role="img" aria-label="buy">🛒</span>
-              <span>Choose Standard</span>
-            </div>
-          }
+          <span role="img" aria-label="buy">🛒</span>
+          <span>Choose Standard</span>
         </button>
       </div>
 
@@ -564,27 +541,19 @@ const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoad
           <li className="flex items-center space-x-2"><span role="img" aria-label="checkmark">✔️</span><span>Dedicated account manager</span></li>
         </ul>
         <button onClick={() => onSubscribe('Enterprise')} className="mt-6 w-full bg-purple-800 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-900 transition-colors">
-          {
-            isLoading
-            ?
-            <Loader className='animate-spin'/>
-            :
-            <div>
-             <span role="img" aria-label="contact">📞</span>
-            <span>Contact Us</span>
-            </div>
-          }
+          <span role="img" aria-label="contact">📞</span>
+          <span>Contact Us</span>
         </button>
       </div>
     </div>
   </div>
 );
 
-const PromotionCreationPage = ({ onCreate }: { onCreate: any }) => {
+const PromotionCreationPage = ({ onCreate }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onCreate({ title, description, status: 'Live', views: 0, clicks: 0 });
   };
@@ -609,7 +578,7 @@ const PromotionCreationPage = ({ onCreate }: { onCreate: any }) => {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            rows={4}
+            rows="4"
             required
             className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           ></textarea>
@@ -623,7 +592,7 @@ const PromotionCreationPage = ({ onCreate }: { onCreate: any }) => {
   );
 };
 
-const AnalyticsPage = ({ campaign }: { campaign: any }) => (
+const AnalyticsPage = ({ campaign }) => (
   <div className="p-8">
     <h2 className="text-2xl font-bold mb-4">Campaign Analytics</h2>
     <p className="text-gray-600 mb-6">Track the performance of your campaign.</p>
@@ -648,4 +617,4 @@ const AnalyticsPage = ({ campaign }: { campaign: any }) => (
   </div>
 );
 
-export default VendorProfileCompletion;
+export default VendorPortal;

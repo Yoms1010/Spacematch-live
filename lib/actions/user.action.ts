@@ -136,7 +136,6 @@ export const getAuthenticatedUser = async () => {
 };
 
 export const isAthenticated = async () => {
-
   const token = await getToken();
   if (token) {
     return true;
