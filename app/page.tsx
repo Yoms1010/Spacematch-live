@@ -204,11 +204,11 @@ export default async function HomePage() {
             }`}
           >
               {isReading === "heading" ? (
-                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 w-full text-main-100'>
+                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 py-1 w-full text-main-100'>
                       <Loader className="w-4 h-4 mr-1 animate-spin" /> Reading...
                   </div>
               ) : (
-                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 w-full'>
+                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 py-1 w-full'>
                     <RiSpeakAiFill className="w-4 h-4 mr-1" /> Read Aloud
                   </div>
               )}
