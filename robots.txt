@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /in/
+Sitemap: https://www.spacematch.com.ng/sitemap.xml
