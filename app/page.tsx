@@ -1,17 +1,218 @@
+'use client'
+
 import Footer from '@/components/Footer';
+import { Loader, Volume2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import { RiSpeakAiFill } from "react-icons/ri";
+
+// --- Global API Constants and Helpers ---
+// --- Global API Constants and Helpers ---
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_TTS_API_KEY;
+const GENERATE_CONTENT_URL = process.env.NEXT_PUBLIC_GENERATE_CONTENT_URL+`?key=${apiKey}`
+const TTS_URL = process.env.NEXT_PUBLIC_TTS_URL+`?key=${apiKey}`
+
+
+// Helper for Exponential Backoff
+const fetchWithExponentialBackoff = async (url: string, options: any, retries = 3) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        return await response.json();
+      }
+      if (response.status === 429 && i < retries - 1) {
+        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw new Error(`API request failed with status ${response.status}`);
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+};
+
+// Helper for Base64 to ArrayBuffer (for TTS)
+const base64ToArrayBuffer = (base64: string) => {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
+// Helper for PCM to WAV conversion (for TTS)
+const pcmToWav = (pcmData: any, sampleRate:any) => {
+  const buffer = new ArrayBuffer(44 + pcmData.byteLength);
+  const view = new DataView(buffer);
+  let offset = 0;
+
+  const writeString = (str: string) => {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+    offset += str.length;
+  };
+
+  const writeUint32 = (val: any) => {
+    view.setUint32(offset, val, true);
+    offset += 4;
+  };
+
+  const writeUint16 = (val: any) => {
+    view.setUint16(offset, val, true);
+    offset += 2;
+  };
+
+  const numChannels = 1;
+  const bitsPerSample = 16;
+  const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+  const blockAlign = numChannels * (bitsPerSample / 8);
+
+  // RIFF header
+  writeString('RIFF');
+  writeUint32(36 + pcmData.byteLength);
+  writeString('WAVE');
+
+  // fmt chunk
+  writeString('fmt ');
+  writeUint32(16);
+  writeUint16(1);
+  writeUint16(numChannels);
+  writeUint32(sampleRate);
+  writeUint32(byteRate);
+  writeUint16(blockAlign);
+  writeUint16(bitsPerSample);
+
+  // data chunk
+  writeString('data');
+  writeUint32(pcmData.byteLength);
+
+  // Write PCM data
+  for (let i = 0; i < pcmData.length; i++) {
+    view.setInt16(offset, pcmData[i], true);
+    offset += 2;
+  }
+
+  return new Blob([view], { type: 'audio/wav' });
+};
+
+// Simple Markdown Renderer for LLM Output
+const MarkdownRenderer = ({ content }: { content: any }) => {
+    if (!content) return null;
+
+    const formattedContent = content.split('\n').map((line: any, index: any) => {
+        if (line.startsWith('###')) {
+            return <h4 key={index} className="text-lg font-bold mt-3 mb-1 text-gray-800">{line.replace('###', '').trim()}</h4>;
+        }
+        if (line.startsWith('**') && line.endsWith('**')) {
+            return <p key={index} className="font-semibold mt-2">{line.replace(/\*\*/g, '').trim()}</p>;
+        }
+        if (line.startsWith('* ') || line.startsWith('- ')) {
+            return <li key={index} className="ml-5 list-disc text-sm text-gray-700">{line.substring(2).trim()}</li>;
+        }
+        if (line.trim() === '') return <br key={index} />;
+
+        return <p key={index} className="text-sm text-gray-700">{line}</p>;
+    });
+
+    return <div className="p-4 bg-gray-50 rounded-lg mt-4 border border-gray-200">{formattedContent}</div>;
+};
 
 export default async function HomePage() {
+
+  const [isReading, setIsReading] = useState(null); // Tracks which service ID is being read
+
+  const readDescription = async (text: string, id: any) => {
+    if (isReading === id) return; // Prevent double click
+
+    setIsReading(id);
+    try {
+        const payload = {
+            contents: [{
+                parts: [{ text: `Say this service description clearly: ${text}` }]
+            }],
+            generationConfig: {
+                responseModalities: ["AUDIO"],
+                speechConfig: {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName: "Puck" } // Upbeat voice
+                    }
+                }
+            },
+            model: "gemini-2.5-flash-preview-tts"
+        };
+
+        const result = await fetchWithExponentialBackoff(TTS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const part = result?.candidates?.[0]?.content?.parts?.[0];
+        const audioData = part?.inlineData?.data;
+        const mimeType = part?.inlineData?.mimeType;
+
+        if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+            const match = mimeType.match(/rate=(\d+)/);
+            const sampleRate = match ? parseInt(match[1], 10) : 24000;
+            const pcmData = base64ToArrayBuffer(audioData);
+            const pcm16 = new Int16Array(pcmData);
+            const wavBlob = pcmToWav(pcm16, sampleRate);
+            const audioUrl = URL.createObjectURL(wavBlob);
+
+            const audio = new Audio(audioUrl);
+            audio.onended = () => {
+                setIsReading(null);
+                URL.revokeObjectURL(audioUrl);
+            };
+            audio.play().catch(e => {
+                console.error("Audio playback error:", e);
+                setIsReading(null);
+            });
+        } else {
+            console.error("Invalid TTS response structure or mime type:", mimeType);
+            setIsReading(null);
+        }
+    } catch (error) {
+        console.error("Error generating or playing TTS audio:", error);
+        setIsReading(null);
+    }
+  };
 
   return (
     <>
       {/* Hero Section */}
       <header className="hero-bg pt-56 pb-32">
-        <div className="container mx-auto px-6 text-center">
+        <div className="container flex flex-col items-center gap-3 px-6 text-center ">
           <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4">Co-own Your Future. Build Together.</h1>
           <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
             Spacematch helps you pool resources with others to co-own land and create custom living spaces. Find partners, buy land, and build your dream home or rental property.
           </p>
+          <button
+            onClick={() => readDescription("Co-own Your Future. Build Together. Spacematch helps you pool resources with others to co-own land and create custom living spaces. Find partners, buy land, and build your dream home or rental property.", "heading")}
+            disabled={isReading !== null}
+            className={`inline-flex items-center text-sm font-medium rounded-full px-2 py-1 transition bg-gray-400 w-[150px] ${
+                isReading === "heading"
+                    ? 'bg-blue-200 text-main-100 cursor-wait'
+                    : 'bg-blue-50 text-main-100 hover:bg-gray-300'
+            }`}
+          >
+              {isReading === "heading" ? (
+                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 w-full text-main-100'>
+                      <Loader className="w-4 h-4 mr-1 animate-spin" /> Reading...
+                  </div>
+              ) : (
+                  <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 w-full'>
+                    <RiSpeakAiFill className="w-4 h-4 mr-1" /> Read Aloud
+                  </div>
+              )}
+          </button>
           <Link href="/property/search" className="bg-smred-100 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-smred-100/80 transition duration-300">
             Start Your Search
           </Link>

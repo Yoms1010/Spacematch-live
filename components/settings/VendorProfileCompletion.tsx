@@ -84,9 +84,6 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
 
       const response = await axios.post("/api/squadcopay-vendor-sub", payLoad)
       console.log(response);
-      // console.log('User subscribed to tier:', tier);
-      // setIsSubscribed(true);
-      // setCurrentView('dashboard');
   }
 
   const handleCreatePromotion = (campaignData: any) => {
@@ -221,9 +218,9 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
           setCurrentView('verification-pending')
           typeof window != undefined && window.localStorage.setItem("currentView", 'verification-pending')
         }, 1000)
+      }else{
+        toast.error("An error occurred")
       }
-      toast.error("An error occurred")
-      
     } catch (error) {
       setIsLoading(false)
       console.log(error);

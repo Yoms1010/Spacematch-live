@@ -34,7 +34,7 @@ function NavigationBar() {
               <a href="/#how-it-works" className="text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110"> How It Works</a>
               <a href="/#vendors" className="text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110">Our Vendors</a>
               <Link href="/products" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/products/" || pathname.startsWith(`/products/`) ? "text-main-100 scale-125 font-semibold" : ""}`}>Products</Link>
-              <Link href="/property/search" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/property/" || pathname.startsWith(`/property/`) ? "bg-gradient-to-r from-smred-100 via-black-1 to-main-100 inline-block text-transparent bg-clip-text scale-110 font-semibold" : ""}`}>Properties</Link>
+              <Link href="/property/search" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/property/" || pathname.startsWith(`/property/`) ? "bg-main-100 inline-block text-transparent bg-clip-text scale-110 font-semibold" : ""}`}>Properties</Link>
             </div>
             <div className="hidden md:flex items-center space-x-4">
               <Link href="/sign-in" className="text-gray-600 hover:text-main-100">Sign In</Link>

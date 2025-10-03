@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { toast } from 'react-toastify';
 
-function VendorSignUp({showForm, setShowForm, showLegalModal, setShowLegalModal}: {showForm: string | null, setShowForm: Dispatch<SetStateAction<string>> | any, showLegalModal: boolean|null, setShowLegalModal:Dispatch<SetStateAction<string>> | any,}) {
+function VendorSignUp({setShowForm, setShowLegalModal}: {showForm: string | null, setShowForm: Dispatch<SetStateAction<string>> | any, showLegalModal: boolean|null, setShowLegalModal:Dispatch<SetStateAction<string>> | any,}) {
   const [isVendorAgreed, setIsVendorAgreed] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState<boolean>(false)
   const [loading, setLoading] = useState(false)
@@ -278,7 +278,7 @@ function VendorSignUp({showForm, setShowForm, showLegalModal, setShowLegalModal}
                           </p>
                         </div>
                       )}
-                      <p className='text-red-500 mt-2'>Password must be atleast 8 characters, including Upercase, special characters and numbers</p>
+                      <p className='text-red-500 mt-2'>Password must be atleast 8 characters, including Uppercase, special characters and numbers</p>
                   </div>
 
 
@@ -290,9 +290,9 @@ function VendorSignUp({showForm, setShowForm, showLegalModal, setShowLegalModal}
                   checked={isVendorAgreed}
                   onChange={(e) => setIsVendorAgreed(e.target.checked)}
                   required
-                  className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                  className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mr-2 "
                 />
-                <label htmlFor="agreeTerms" className="text-sm text-gray-700">
+                <label htmlFor="termsAgreed" className="text-sm text-gray-700 cursor-pointer">
                     This means that you agree with the <button type="button" onClick={() => setShowLegalModal(true)} className="text-main-100 hover:underline font-semibold">SpaceMatch terms and conditions</button>
                 </label>
               </div>
@@ -304,13 +304,13 @@ function VendorSignUp({showForm, setShowForm, showLegalModal, setShowLegalModal}
                 disabled={!isVendorAgreed}
                 className={`flex justify-center items-center w-full mt-6 py-3 px-4 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2 transition-all duration-200 ${isVendorAgreed ? 'bg-purple-700 hover:bg-purple-700' : 'bg-gray-400 cursor-not-allowed'}`}
                >
-                    {
-                    loading
-                    ?
-                    <Loader className='animate-spin'/>
-                    :
-                    "Sign Up"
-                    }
+                  {
+                  loading
+                  ?
+                  <Loader className='animate-spin'/>
+                  :
+                  "Sign Up"
+                  }
             </button>
             </div>
           </form>

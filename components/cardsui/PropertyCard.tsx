@@ -31,7 +31,7 @@ function PropertyCard({ verified, type, city, title, vendor, price, area }: Prop
         <h4 className="mt-2 font-semibold text-gray-900">{title} <span className="font-normal text-gray-600">by {vendor}</span></h4>
         <div className="mt-3 flex items-center justify-between">
           <div className="text-sm text-gray-700">${price.toLocaleString()} • {area.toLocaleString()} m²</div>
-          <button className="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">View</button>
+          <button className="text-main-100 hover:text-main-100 text-sm font-semibold">View</button>
         </div>
       </div>
     </div>

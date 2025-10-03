@@ -193,18 +193,18 @@ const TopNavBar = ({user}: {user: any}) => {
             {topBarLinks.map((item) => {
               const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`)
               return (
-                  <DisclosureButton
-                    key={item.label}
-                    as="a"
-                    href={item.route}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={classNames(
-                      isActive ? 'bg-gray-200 text-gray-800' : 'text-gray-800 border-b-2 border-white hover:border-main-100 text-center font-semibold',
-                      'block rounded-md px-3 py-2 text-base font-medium',
-                  )}
-                  >
-                      {item.label}
-                  </DisclosureButton>
+                <DisclosureButton
+                  key={item.label}
+                  as="a"
+                  href={item.route}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={classNames(
+                    isActive ? 'bg-gray-200 text-gray-800' : 'text-gray-800 border-b-2 border-white hover:border-main-100 text-center font-semibold',
+                    'block rounded-md px-3 py-2 text-base font-medium',
+                )}
+                >
+                  {item.label}
+                </DisclosureButton>
               )
               })}
                

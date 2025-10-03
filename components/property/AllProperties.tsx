@@ -20,14 +20,14 @@ function AllProperties({properties}: {properties: any}) {
                   alt="Modern Villa" 
                   className="w-full h-48 object-cover rounded-tl-xl rounded-tr-xl"
                 />
-                <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Verified Docs</span>
+                <span className="absolute top-2 right-2 bg-main-100 text-main-100 text-xs font-semibold px-2.5 py-1 rounded-full">Verified Docs</span>
               </div>
               <div className="p-4">
                 <p className="text-sm text-gray-500">Single Family Home • {item.state}, {item.country}</p>
                 <h3 className="font-semibold text-lg mt-1">{item.title}</h3>
                 <p className="text-sm text-gray-600 mt-1">by <span className="font-medium text-gray-800">Spacematch</span></p>
                 <div className="flex justify-between items-center mt-4">
-                  <p className="text-lg font-bold text-indigo-600">NGN {Number(item.total_cost).toLocaleString()}</p>
+                  <p className="text-lg font-bold text-main-100">NGN {Number(item.total_cost).toLocaleString()}</p>
                   <p className="text-sm text-gray-600">{item.squareMeters} m²</p>
                 </div>
               </div>

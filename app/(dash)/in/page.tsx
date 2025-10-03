@@ -28,12 +28,11 @@ interface User {
 const Home = async () => {
 
   const user: User | any = await getAuthenticatedUser()
-  const property = await getVendorProperties(user?.whoId.split(";")[1])
+  const property = await getVendorProperties(typeof user !== 'undefined' ? user?.whoId.split(";")[1] : 0)
   const clients = await getClients()
   const vendors = await getVendors()
   const agents = await getAgents()
   const properties = await getAllProperties()
-  const isUserAthenticated = await isAthenticated()
 
 
   // Render a single, centralized loading state.
