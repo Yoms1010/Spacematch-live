@@ -26,8 +26,9 @@ const SubscriptionPage = async () => {
 
   return (
     <section className='flex-1 justify-center items-center min-h-screen py-5'>
-      {userRole === "Developer" &&  <VendorSubscription user={user} subscriptionCard={vendorSubscriptionCard} />}
-      {userRole === "Buyer" &&  <ClientSubscription user={user} subscriptionCard={clientSubscriptionCard} />}
+      {/* {userRole === "Developer" &&  <VendorSubscription user={user} subscriptionCard={vendorSubscriptionCard} />}
+      {userRole === "Buyer" &&  <ClientSubscription user={user} subscriptionCard={clientSubscriptionCard} />} */}
+      
     </section>
   )
 }

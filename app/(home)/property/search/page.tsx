@@ -18,7 +18,7 @@ async function SearchPage() {
             <form className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
               <div className="md:col-span-1">
                 <label htmlFor="location" className="sr-only">Where</label>
-                <input type="text" id="location" placeholder="Where: e.g. 'California'" className="w-full text-gray-700 placeholder-gray-500 rounded-full border-none focus:ring-2 focus:ring-main-100 py-3 px-4" />
+                <input type="text" id="location" placeholder="Where: e.g. 'Lagos'" className="w-full text-gray-700 placeholder-gray-500 rounded-full border-none focus:ring-2 focus:ring-main-100 py-3 px-4" />
               </div>
               <div className="md:col-span-1">
                 <label htmlFor="size" className="sr-only">Size</label>
@@ -26,7 +26,7 @@ async function SearchPage() {
               </div>
               <div className="md:col-span-1">
                 <label htmlFor="amount" className="sr-only">Amount</label>
-                <input type="text" id="amount" placeholder="Amount: e.g. '$200,000'" className="w-full text-gray-700 placeholder-gray-500 rounded-full border-none focus:ring-2 focus:ring-main-100 py-3 px-4" />
+                <input type="text" id="amount" placeholder="Amount: e.g. 'NGN200,000,000'" className="w-full text-gray-700 placeholder-gray-500 rounded-full border-none focus:ring-2 focus:ring-main-100 py-3 px-4" />
               </div>
               <button type="submit" className="md:col-span-1 bg-smred-100 text-white rounded-full p-3 flex items-center justify-center hover:bg-main-100 transition duration-300">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
