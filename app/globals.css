@@ -500,7 +500,8 @@ input[type="range"]:focus::-moz-range-thumb {
   margin: 0px;
   padding: 0;
 }
-.ol {
+
+/* .ol {
   --diameter: 30px;
   list-style: none;
   counter-reset: mylist;
@@ -508,7 +509,7 @@ input[type="range"]:focus::-moz-range-thumb {
   font: bold 1rem / var(--diameter) sans-serif;
   background-image: url('data:image/svg+xml,<svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect x="80" y="0" width="20" height="100" fill=" %23FF3131" /></svg>');
   background-repeat: no-repeat;
-  background-size: 20px 97%;  /* 52 is a magic number */
+  background-size: 20px 97%; 
 }
 ol li {
   margin: 0 0 35px 3px;
@@ -525,7 +526,7 @@ ol li:before {
   text-align: center;
   color: #fff;
   background: #03B5AA;
-}
+} */
 
 .img-thumbnail {
   padding: 1rem;
@@ -1560,10 +1561,6 @@ button:disabled{
 }
 
 
-/* .checkbox-toolbar  {
-  display: flex;
-  justify-items: center;
-} */
 
 .checkbox-toolbar input[type="checkbox"] {
   opacity: 0;
@@ -1596,8 +1593,6 @@ button:disabled{
   background-color: #03B5AA;
   border-color: color-mix(in srgb, var(--default-color), transparent 80%);
 }
-
-
 
 
 .radio-toolbar input[type="radio"] {

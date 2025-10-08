@@ -2,30 +2,10 @@
 import MobileNav from '@/components/MobileNav';
 import NavBar from '@/components/NavBar';
 import SideBar from '@/components/SideBar';
-import { getAuthenticatedUser, isAthenticated } from '@/lib/actions/user.action';
+import { getAuthenticatedUser} from '@/lib/actions/user.action';
 import React, { Suspense, ReactNode } from 'react';
 import { getCurrentAgentChatCount, getCurrentClientChatCount } from '@/lib/actions/chat.actions'
-import { redirect } from 'next/navigation';
-
-// Define a type for the user object to ensure type safety throughout the component.
-interface User {
-  id: number;
-  client_sc_id: number | null;
-  vendor_sc_id: number | null;
-  name: string;
-  whoId: string;
-  email: string;
-  email_verified_at: string | null;
-  photo: string;
-  complete: string;
-  terms_and_conditions: string | null;
-  refund_policy: string | null;
-  isSubscribed: string;
-  plan: string;
-  active: string;
-  created_at: string;
-  updated_at: string;
-}
+import { User } from '@/types';
 
 // Define the props for the main RootLayout component.
 interface RootLayoutProps {
@@ -38,6 +18,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const user: User | any = await getAuthenticatedUser()
   const buyerChatCount = await getCurrentClientChatCount()
   const agentChatCount = await getCurrentAgentChatCount()
+
 
   return (
     <Suspense

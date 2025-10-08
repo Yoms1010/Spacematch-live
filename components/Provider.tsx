@@ -3,7 +3,7 @@
 
 import { ContextProvider } from '@/context/ContextProvider'
 import React from 'react'
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { useCallback } from 'react';
 import { logout } from '@/lib/actions/user.action';
@@ -13,24 +13,29 @@ function Provider({children} : Readonly<{
   }>) {
 
       const router = useRouter();
-    
+      const pathname = usePathname()
+      const token = typeof window !== 'undefined' && window.localStorage.getItem("ACCESS_TOKEN");
+  
+      if (pathname.includes("/in/")) {
+          if (!token) {
+            router.replace("/sign-in?not-signed-in")
+          }
+      }
+
       // Define the sign-out logic
       const handleSignOut =  useCallback(async() => {
-        // This is where you would clear user session, tokens, etc.
-        await logout()
-        console.log("Signing out due to inactivity...");
-        typeof window !== 'undefined' && window.localStorage.removeItem("ACCESS_TOKEN")
-        // Example: Clear a token from localStorage
-        // localStorage.removeItem('userAuthToken');
-        
-        // Redirect to the login page with a reason
-        router.push('/sign-in?reason=inactive');
+        if (token) {
+          typeof window !== 'undefined' && window.localStorage.removeItem("ACCESS_TOKEN")
+          router.push('/sign-in?reason=inactivity');
+          await logout()
+          console.log("Signing out due to inactivity...");
+        }
       }, [router]);
     
       // Use the hook to track inactivity
       useInactivityTracker({
         onSignOut: handleSignOut,
-        timeout: 20 * 60 * 1000, // 30 minutes
+        timeout: 20 * 60 * 1000, // 20 minutes
       });
 
   return (

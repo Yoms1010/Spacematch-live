@@ -1,6 +1,4 @@
-import { axiosClient } from "@/axios-server";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { json } from "stream/consumers";
 
 const StateContext = createContext({
     user: {name: "", isSubscribed: ""},
@@ -63,7 +61,7 @@ export const ContextProvider = ({children}: Readonly<{
         _setUser(user)
 
         if(user){
-            window.localStorage.setItem('current_user', JSON.stringify(user));
+            // window.localStorage.setItem('current_user', JSON.stringify(user));
         }else{
             window.localStorage.removeItem('current_user');
         }

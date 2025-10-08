@@ -37,8 +37,8 @@ function NavigationBar() {
               <Link href="/property/search" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-110 ${pathname === "/property/" || pathname.startsWith(`/property/`) ? "bg-main-100 inline-block text-transparent bg-clip-text scale-110 font-semibold" : ""}`}>Properties</Link>
             </div>
             <div className="hidden md:flex items-center space-x-4">
-              <Link href="/sign-in" className="text-gray-600 hover:text-main-100">Sign In</Link>
-              <Link href="/sign-up" className="bg-smred-100 text-white px-4 py-2 rounded-md hover:bg-smred-100/70 transition duration-300">Register</Link>
+              <Link href="/sign-in" className={`text-gray-600 hover:text-main-100 transform transition-all duration-300 ease-in-out hover:scale-125 ${pathname.includes("/sign-in") ? "text-main-100  font-semibold" : ""}`}>Sign In</Link>
+              <Link href="/sign-up" className={`bg-smred-100 px-4 py-2 rounded-md hover:bg-smred-100/70 transition duration-300 ${pathname.includes("/sign-up") ? "border border-main-100 font-semibold text-main-100" : "text-white"}`}>Register</Link>
             </div>
             <div className="md:hidden">
               <button onClick={() => setIsOpen(!isOpen)} className="text-gray-800 focus:outline-none">

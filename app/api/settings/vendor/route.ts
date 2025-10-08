@@ -12,21 +12,24 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const vendorId = formData.get("vendorId"); 
 
-    const ninf: File | null = formData.get('nin') as unknown as File;
+    // const ninf: File | null = formData.get('nin') as unknown as File;
     const bizRegDoc: File | null = formData.get('business_reg_doc') as unknown as File;
     const profilePhoto: File | null = formData.get('profile_photo') as unknown as File;
 
-    if (!ninf || !bizRegDoc || !profilePhoto) {
-      return NextResponse.json({ success: false, message: 'No file found.' }, { status: 400 });
+    if (!bizRegDoc) {
+      return NextResponse.json({ success: false, message: 'No business registration document uploaded.' }, { status: 400 });
+    }
+    if (!profilePhoto) {
+      return NextResponse.json({ success: false, message: 'No profile photo uploaded.' }, { status: 400 });
     }
 
     // return console.log(formData);
 
     // 1. Get the file data as a buffer
-    const ninBytes = await ninf.arrayBuffer();
+    // const ninBytes = await ninf.arrayBuffer();
     const bizRegDocBytes = await bizRegDoc.arrayBuffer();
     const profilePhotoBytes = await profilePhoto.arrayBuffer();
-    const ninBuffer = Buffer.from(ninBytes);
+    // const ninBuffer = Buffer.from(ninBytes);
     const bizRegDocBuffer = Buffer.from(bizRegDocBytes);
     const profilePhotoBuffer = Buffer.from(profilePhotoBytes);
 
@@ -50,14 +53,14 @@ export async function POST(req: NextRequest) {
     // console.log(`File saved to: ${filePath}`);
 
     // 3. Create a Blob from the buffer
-    const ninFileBlob = new Blob([ninBuffer], { type: ninf.type });
+    // const ninFileBlob = new Blob([ninBuffer], { type: ninf.type });
     const bizRegDocFileBlob = new Blob([bizRegDocBuffer], { type: bizRegDoc.type });
     const profilePhotoFileBlob = new Blob([profilePhotoBuffer], { type: profilePhoto.type });
-    formData.delete("nin");
+    // formData.delete("nin");
     formData.delete("business_reg_doc");
     formData.delete("profile_photo");
 
-    formData.append("nin", ninFileBlob, ninf.name);
+    // formData.append("nin", ninFileBlob, ninf.name);
     formData.append("business_reg_doc",bizRegDocFileBlob, bizRegDoc.name);
     formData.append("profile_photo", profilePhotoFileBlob, profilePhoto.name);
     

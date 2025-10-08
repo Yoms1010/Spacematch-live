@@ -34,19 +34,27 @@ declare type LoginUser = {
   password: string;
 };
 
-declare type User = {
-    whoId: string;
-    client_sc_id: number | string;
-    vendor_sc_id: number | string;
-    photo: string;
-    name: string;
-    email: string;
-    isSubscribed: string;
-    plan: string;
-    complete: string;
-    refund_plocy: string;
-    terms_and_conditions: string
-};
+
+// Define a type for the user object to ensure type safety throughout the component.
+declare interface User {
+  id: number;
+  client_sc_id: number | null;
+  vendor_sc_id: number | null;
+  name: string;
+  whoId: string;
+  email: string;
+  email_verified_at: string | null;
+  photo: string;
+  complete: string;
+  terms_and_conditions: string | null;
+  refund_policy: string | null;
+  isSubscribed: string;
+  plan: string;
+  active: string;
+  created_at: string;
+  updated_at: string;
+}
+
 
 declare type NewUserParams = {
   userId: string;

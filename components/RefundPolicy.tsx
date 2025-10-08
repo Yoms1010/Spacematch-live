@@ -31,7 +31,7 @@ function RefundPolicy({modalOpen, setModalOpen}: ModalProps) {
                             type="button"
                             data-autofocus
                             onClick={() => setModalOpen(false)}
-                            className="inline-flex w-full justify-center rounded-md border-2 border-red-500 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                            className="inline-flex w-full justify-center rounded-md text-red-700 hover:text-red-500 bg-white px-4 py-2 text-lg font-semibold shadow-md sm:mt-0 sm:w-auto"
                         >
                             X
                         </button>

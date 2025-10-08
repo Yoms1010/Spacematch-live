@@ -1,12 +1,10 @@
 'use server'
 
 import axios, {
-    AxiosInstance,
     AxiosError,
     InternalAxiosRequestConfig,
     AxiosResponse
 } from "axios";
-import { getTokenFromLocalStorage, removeTokenFromLocalStorage } from "./components/cookie/LocalStorage";
 import { cookies } from "next/headers";
 
 // --- Configuration ---
@@ -24,6 +22,7 @@ const getAuthToken = async (): Promise<string | null> => {
     // which would likely be an async operation.
     const cookieStore = await cookies()
     const token: string | undefined | null = cookieStore.get('ACCESS_TOKEN')?.value
+    
     return token!;
 };
 

@@ -2,15 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import TermsAndConditions from './TermsAndConditions';
-import RefundPolicy from './RefundPolicy';
 import { useState } from 'react';
+import PrivacyPolicy from './PrivacyPolicy';
 
 export default function Footer() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const pathname = usePathname()
+
   return (
     <footer className="bg-gray-900 text-white border-t-2 border-dashed">
       <div className="container mx-auto px-6 py-12">
@@ -32,7 +31,7 @@ export default function Footer() {
               <li className="mb-2"><Link href="#" className="hover:text-indigo-400">About Us</Link></li>
               <li className="mb-2"><Link href="/contact-us" className="hover:text-indigo-400">Contact</Link></li>
               <li className="mb-2"><Link href="/faq" className="hover:text-indigo-400">FAQ</Link></li>
-              <li className="mb-2"><Link href="/property-search" className="hover:text-indigo-400">Search</Link></li>
+              {/* <li className="mb-2"><Link href="/property-search" className="hover:text-indigo-400">Search</Link></li> */}
             </ul>
           </div>
           <div>
@@ -67,7 +66,7 @@ export default function Footer() {
           <p>&copy; 2025 Spacematch. All rights reserved.</p>
         </div>
       </div>
-      <RefundPolicy modalOpen={modalOpen} setModalOpen={setModalOpen}/>
+      <PrivacyPolicy modalOpen={modalOpen} setModalOpen={setModalOpen}/>
       <TermsAndConditions openModal={openModal} setOpenModal={setOpenModal}/>
     </footer>
   );

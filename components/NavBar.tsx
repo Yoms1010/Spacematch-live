@@ -17,21 +17,12 @@ const NavBar = ({user}: {user: any}) => {
       const router = useRouter()
       const {token, setToken} = useStateContext()
     
-
-
       const onSignOut = async () => {
         await logout()
           typeof window && window.localStorage.removeItem('ACCESS_TOKEN');
           setToken("")
           // typeof window && window.location.reload()
-          return router.replace("/sign-in")
-      }
-
-      if (!user) {
-        typeof window !== 'undefined' && window.localStorage.removeItem('ACCESS_TOKEN');
-        setToken("")
-          // typeof window && window.location.reload()
-        return router.replace("/sign-in")
+          return router.replace("/sign-in?logged out")
       }
     
 

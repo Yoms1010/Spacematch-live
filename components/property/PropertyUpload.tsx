@@ -65,6 +65,8 @@ const PropertyUpload = ({ user }: {user: User}) => {
       image: images
     }
 
+    if (user.isSubscribed === "Yes") return toast.error(`You are yet to subscribe.. Kindly subscribe to get instant access to your property upload.`)
+
     //Send to Backend
     setLoading(true)
     await axiosClient.post(`/property`, payLoad)
@@ -357,7 +359,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
                             </>
                           } 
                     </div>
-                    <button onClick={getLocationAgent} className='p-2 w-full bg-main-100 rounded-md text-white font-semibold' disabled={!form.lga &&!form.country}>See Agents</button>
+                    <button onClick={getLocationAgent} className='p-2 w-full bg-main-100 rounded-md text-white font-semibold' disabled={!form.lga &&!form.country}>Search Agents</button>
                   </div>
 
                   <div className='row my-3'>
@@ -505,7 +507,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
                           )}
                         </div>
                       ))}
-                      <button onClick={uploadPropertyAmenities} className='w-full p-2 bg-main-100 text-white my-3'>Upload Amenities</button>
+                      <button onClick={uploadPropertyAmenities} className='w-full p-2 bg-main-100 text-white my-3' disabled={!propertyUploaded ? true : false}>Upload Amenities</button>
                     </div>
                   </div>
                 </div>

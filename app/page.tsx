@@ -209,7 +209,7 @@ export default async function HomePage() {
                   </div>
               ) : (
                   <div className='rounded-full bg-white inline-flex items-center justify-center text-sm px-2 py-1 w-full'>
-                    <RiSpeakAiFill className="w-4 h-4 mr-1" /> Read Aloud
+                    <RiSpeakAiFill className="w-4 h-4 mr-1" /> Audio Version
                   </div>
               )}
           </button>

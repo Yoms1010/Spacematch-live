@@ -3,7 +3,7 @@
 
 import { useStateContext } from '@/context/ContextProvider';
 import axios from 'axios';
-import { Loader } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false)
+    const [passwordShown, setPasswordShown] = useState<boolean>(false)
     // const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
     const {setUser, token, setToken} = useStateContext()
 
@@ -38,11 +39,16 @@ const SignIn = () => {
             toast.success("Signed in successfully")
             redirect("/in")
           }
-          // console.log(res);
+          console.log(res);
           const resData = res.data
-          const jsonData = JSON.parse(resData)
           setLoading(false)
-          toast.error(jsonData.message)
+          if (resData.error === "An internal server error occurred.") {
+            toast.error("Error: Kindly check your connection..")
+          }
+          toast.error("Invalid credentials")
+          
+        }else{
+          console.log("Error: Kindly try again..");
         }
       } catch (error: any) {
         console.log(error);
@@ -105,14 +111,25 @@ const SignIn = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-              />
+              <div className='flex justify-center items-center bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'>
+                <input
+                  type={passwordShown ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 text-gray-900 bg-gray-200 placeholder-gray-500 focus:outline-none"
+                />
+                <div onClick={() => setPasswordShown(!passwordShown)} className='bg-gray-200 mr-3'>
+                  {
+                    !passwordShown
+                    ?
+                    <Eye className='hover:scale-95'/>
+                    :
+                    <EyeOff className='hover:scale-95'/>
+                  }
+                </div>
+              </div>
             </div>
 
             {/* Forgot Password Link */}

@@ -7,11 +7,11 @@ import Head from 'next/head';
 
 const ProductSolutions = () => {
   return (
-    <div className="bg-gray-900 min-h-screen pt-20 pb-32">
+    <div className="bg-gray-100 min-h-screen pt-28 pb-32">
       <Head>
         <title>Our Solutions</title>
         <meta name="description" content="Explore our innovative living solutions." />
-        <link rel="icon" href="/favicon.ico" />
+        {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <main>

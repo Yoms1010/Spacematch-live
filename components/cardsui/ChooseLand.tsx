@@ -1,6 +1,7 @@
 
 'use client'
 
+import { nigeria } from '@/constants';
 import { PropertyItemProps } from '@/types';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
@@ -21,7 +22,7 @@ const ChooseLand = ({properties}: {properties: PropertyItemProps[]}) => {
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
 
   const lgasForState = selectedState
-    ? states.find((s) => s.name === selectedState)?.lgas || []
+    ? nigeria.find((s) => s.state === selectedState)?.lga || []
     : [];
 
   const router = useRouter()
@@ -91,9 +92,9 @@ const ChooseLand = ({properties}: {properties: PropertyItemProps[]}) => {
               onChange={handleStateChange}
             >
               <option value="">All States</option>
-              {states.map((state) => (
-                <option key={state.name} value={state.name}>
-                  {state.name}
+              {nigeria.map((item) => (
+                <option key={item.state} value={item.state}>
+                  {item.state}
                 </option>
               ))}
             </select>

@@ -126,7 +126,7 @@ const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4 text-purple-800">Welcome to the Vendor Portal!</h2>
     <p className="text-gray-600 mb-6">
-      Thank you for joining our platform. Let's get you set up to start listing your properties.
+      Thank you for joining our platform. Let's get you set up for your professional profile or listing your properties.
     </p>
     <div className="space-y-4 text-left">
       <p className="flex items-center space-x-2 text-gray-700"><span role="img" aria-label="checkmark">✔️</span><span>Complete your profile.</span></p>
@@ -143,6 +143,10 @@ const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
 const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, vendor: any}) => {
 
   const [step, setStep] = useState(1);
+  const [docError, setDocError] = useState({
+    ninError: "",
+    bizRegError: ""
+  })
   const [formData, setFormData] = useState({
     businessName: '',
     businessAddress: '',
@@ -151,7 +155,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     businessRegNumber: '',
     businessType: '',
     serviceOfferings: '',
-    nin: null,
+    nin: '',
     bizRegDoc: null,
     profilePhoto: null,
     bankAccountName: '',
@@ -162,10 +166,19 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
   const {acc_name, acc_number, bank_name} = vendor.bank_details || {acc_name: undefined, acc_number: undefined, bank_name: undefined};
   const { id, business_name, business_email, business_address, business_phone, business_reg_no, business_type,service_offering, nin, business_reg_doc, profile_photo} = vendor.data;
 
-      // console.log(vendor);
-      
 
-  const handleNextStep = () => setStep(step + 1);
+  const handleNextStep = () => {
+    if (step > 1) {
+      if (!formData.nin && !nin) {
+        return setDocError({...docError, ninError: "Your NIN is needed, kindly fill.."})
+      }
+      if (!formData.bizRegDoc && !business_reg_doc) {
+        return setDocError({...docError, bizRegError: "Your business registration is needed, kindly fill.."})
+      }
+    }
+
+    setStep(step + 1);
+  }
   const handlePreviousStep = () => setStep(step - 1);
 
   const handleChange = (e: any) => {
@@ -178,8 +191,25 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  // console.log(formData);
-  
+  async function onNinVerificaion(e: any){
+    setFormData({...formData, nin: e.target.value})
+
+    const payLoad = {
+      nin: formData.nin,
+      firstname: "Bunch",
+      lastname: "Dillon"
+    }
+    await axios.post("/api/verify-nin", payLoad)
+      .then((data) => {
+        console.log(data.status);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+
+      })
+  }
 
   const handleFinalSubmit = async (e: any) => {
     e.preventDefault();
@@ -313,14 +343,14 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <label className="block">
               <span className="text-gray-700">National Identification Number (NIN) Document</span>
               <input
-                type="file"
+                type="text"
                 name="nin"
-                // value={formData.nin || nin}
-                accept="image/*"
-                onChange={handleFileChange}
+                defaultValue={formData.nin || nin}
+                onChange={(e) => onNinVerificaion(e)}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
+              <span className='text-red-500 my-2'>{docError.ninError}</span>
             </label>
             <label className="block">
               <span className="text-gray-700">Business Registration Document</span>
@@ -329,10 +359,11 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 name="bizRegDoc"
                 // value={formData.bizRegDoc || business_reg_doc}
                 accept="image/*"
-                onChange={handleFileChange}
+                onChange={(e: any) => setFormData({...formData, bizRegDoc: e.target.files[0]})}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
+              <span className='text-red-500 my-2'>{docError.bizRegError}</span>
             </label>
             <label className="block">
               <span className="text-gray-700">Profile Picture</span>
@@ -341,7 +372,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 name="profilePhoto"
                 // value={formData.profilePhoto || profile_photo}
                 accept="image/*"
-                onChange={handleFileChange}
+                onChange={(e: any) => setFormData({...formData, profilePhoto: e.target.files[0]})}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
