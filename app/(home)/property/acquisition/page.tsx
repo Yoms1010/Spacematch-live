@@ -32,10 +32,10 @@ const mockProperties: Property[] = [
         title: "Prime Land in Ikeja",
         location: "Ikeja, Lagos",
         size: 1000,
-        image: "https://placehold.co/600x400/D1D5DB/1F2937?text=Ikeja+Land",
+        image: "/properties/land-1.jpg",
         matchPreferences: [
             "Investment property",
-            "Budget: $150k - $200k",
+            "Budget: ₦150M - ₦200M",
             "Timeline: Within 12 months"
         ]
     },
@@ -44,10 +44,10 @@ const mockProperties: Property[] = [
         title: "Residential Plot in Abuja",
         location: "Gwagwalada, Abuja",
         size: 750,
-        image: "https://placehold.co/600x400/D1D5DB/1F2937?text=Abuja+Plot",
+        image: "/properties/land-2.jpg",
         matchPreferences: [
             "Vacation home",
-            "Budget: $100k - $150k",
+            "Budget: ₦100M - ₦150M",
             "Partner type: Small group"
         ]
     },
@@ -56,10 +56,10 @@ const mockProperties: Property[] = [
         title: "Rural Land in Ogun",
         location: "Odeda, Ogun",
         size: 2000,
-        image: "https://placehold.co/600x400/D1D5DB/1F2937?text=Ogun+Land",
+        image: "/properties/land-3.jpg",
         matchPreferences: [
             "Airbnb project",
-            "Budget: $80k - $120k",
+            "Budget: ₦80M - ₦120M",
             "Shared values: Sustainability"
         ]
     }
