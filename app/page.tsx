@@ -235,7 +235,7 @@ export default async function HomePage() {
               <p className="text-gray-600 hover:text-main-100">Connect with like-minded individuals or groups who share your vision for co-ownership. Our platform makes it easy to find compatible partners.</p>
             </Link>
             {/* Step 2 */}
-            <div className="flex flex-col items-center">
+            <Link href={"/property/acquisition"} className="flex flex-col items-center">
               <div className="bg-indigo-100 rounded-full p-6 mb-6">
                 <svg className="w-12 h-12 text-main-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -244,7 +244,8 @@ export default async function HomePage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">2. Acquire Land</h3>
               <p className="text-gray-600">Once your group is formed, search for and acquire the perfect piece of land. We provide tools and resources to facilitate a smooth transaction.</p>
-            </div>
+              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 border-2 border-main-100 hover:text-main-100 font-semibold'>Proceed to Mathched Properties</div>
+            </Link>
             {/* Step 3 */}
             <Link href={"/products"} className="flex flex-col items-center hover:text-main-100">
               <div className="bg-indigo-100 rounded-full p-6 mb-6">
@@ -274,7 +275,7 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="md:w-1/2">
-              <img src="/seemless.jpeg" alt="Modern house with a manicured lawn" className="rounded-lg shadow-xl w-full rounded-md" />
+              <img src="/seemless.jpeg" alt="Modern house with a manicured lawn" className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>

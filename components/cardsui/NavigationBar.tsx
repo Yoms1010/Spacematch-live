@@ -15,7 +15,7 @@ function NavigationBar() {
       {
       !pathname.includes("/in")
       &&
-      <nav className="bg-white shadow-md fixed w-full z-10 rounded-bl-2xl rounded-br-2xl">
+      <nav className="bg-white shadow-md fixed w-full z-50 rounded-bl-2xl rounded-br-2xl">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="text-2xl font-bold text-gray-900">

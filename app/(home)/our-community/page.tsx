@@ -63,7 +63,7 @@ const CommunityPage = () => {
                             </p>
                         </div>
                         <div className="relative">
-                            <img src="https://placehold.co/600x400/C89F5B/FFFFFF?text=Diverse+Community" alt="Diverse group of people in a community setting" className="rounded-lg shadow-md w-full" />
+                            <img src="/community2.png" alt="Diverse group of people in a community setting" className="rounded-lg shadow-md w-full" />
                         </div>
                     </div>
                 </section>

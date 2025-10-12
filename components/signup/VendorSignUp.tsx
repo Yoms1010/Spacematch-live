@@ -122,14 +122,6 @@ function VendorSignUp({setShowForm, setShowLegalModal}: {showForm: string | null
 
   return (
     <div className="bg-gray-100 min-h-screen pt-28 pb-20 font-sans ">
-      {/* <header className="bg-white shadow-sm rounded-xl p-6 mb-8 text-center">
-        <div className="container mx-auto max-w-4xl">
-          <h1 className="text-4xl font-extrabold text-gray-800">Vendor Registration</h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Join our network of professionals and connect with clients to build their dream homes.
-          </p>
-        </div>
-      </header> */}
       <main className="container mx-auto max-w-4xl">
         <section className="bg-white rounded-xl shadow-lg p-8">
           <form id="vendor-registration-form" className="space-y-6" onSubmit={handleVendorSignUp}>

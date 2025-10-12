@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         fallback={
           <div className="h-screen flex justify-center items-center text-3xl font-bold w-full">
             <img
-              src="https://placehold.co/100x100/333/FFF?text=LOGO"
+              src="/logo/sm.png"
               width={100}
               height={100}
               alt="logo"

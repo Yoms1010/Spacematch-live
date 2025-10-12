@@ -3,7 +3,7 @@
 import React from 'react'
 import { useSearchParams } from 'next/navigation';
 import FlexiHabitat from '@/components/solutions/flexi-habitat/FlexiHabitat'
-import TraditionalBuildings from '@/components/solutions/traditional-buildings/TraditionalBuildings'
+import TerraTribe from '@/components/solutions/terra-tribe/TerraTribe';
 
 
 function page() {
@@ -20,7 +20,11 @@ function page() {
           ?
           <FlexiHabitat/>
           : 
-          <TraditionalBuildings/>
+          type == "terratribe"
+          ?
+          <TerraTribe/>
+          :
+          <></>
         }
       </div>
       <div className=''>

@@ -3,7 +3,7 @@
 import React from 'react'
 import { useSearchParams } from 'next/navigation';
 import PrefabHomes from '@/components/solutions/prefab-homes/PrefabHomes'
-import TraditionalBuildings from '@/components/solutions/traditional-buildings/TraditionalBuildings'
+import TraditionalBuildings from '@/components/solutions/terra-tribe/TerraTribe'
 
 
 function page() {

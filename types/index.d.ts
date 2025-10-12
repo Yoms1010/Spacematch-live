@@ -34,6 +34,17 @@ declare type LoginUser = {
   password: string;
 };
 
+declare type VendorProps = {
+  id: number;
+  name: string;
+  email: string;
+  code: string;
+  mobile: string | any | number;
+  developer_type: string;
+  is_document_verified: string;
+  created_at: string;
+  actions: string;
+}
 
 // Define a type for the user object to ensure type safety throughout the component.
 declare interface User {

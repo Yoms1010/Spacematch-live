@@ -4,8 +4,9 @@
 import { useStateContext } from '@/context/ContextProvider';
 import axios from 'axios';
 import { Eye, EyeOff, Loader } from 'lucide-react';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const SignIn = () => {
@@ -58,7 +59,14 @@ const SignIn = () => {
     }
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-gray-900 px-4 pt-24 pb-12">
+    <Suspense
+      fallback={
+        <div className="h-screen flex justify-center items-center text-30 font-bold w-full">
+          <Image src={"/logo/sm.png"} width={100} height={100} alt="logo" className="animate-pulse shadow-sm rounded-full"/>
+        </div>
+      }
+    >
+      <div className="min-h-screen flex items-center justify-center text-gray-900 px-4 pt-24 pb-12">
       <div className="md:flex w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl bg-white bg-gray-100/50 backdrop-blur-lg border border-gray-300/50">
         {/* Left Section (Image and Text) */}
         <div
@@ -186,6 +194,7 @@ const SignIn = () => {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 };
 
