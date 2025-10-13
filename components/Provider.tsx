@@ -28,6 +28,7 @@ function Provider({children} : Readonly<{
           typeof window !== 'undefined' && window.localStorage.removeItem("ACCESS_TOKEN")
           router.push('/sign-in?reason=inactivity');
           await logout()
+          typeof window !== 'undefined' && window.location.reload()
           console.log("Signing out due to inactivity...");
         }
       }, [router]);

@@ -75,11 +75,7 @@ export const developerSidebarLinks = [
     //   route: "/in/properties",
     //   label: "Properties",
     // },
-    {
-      imgURL: "/icons/image-upload.png",
-      route: "/in/upload",
-      label: "Upload",
-    },
+   
     // {
     //   imgURL: "/icons/danger.png",
     //   route: "/in/agreement",
@@ -89,6 +85,11 @@ export const developerSidebarLinks = [
       imgURL: "/icons/subscription.png",
       route: "/in/subscription",
       label: "Subscription",
+    },
+     {
+      imgURL: "/icons/image-upload.png",
+      route: "/in/upload",
+      label: "Upload",
     },
     {
       imgURL: "/icons/transaction.svg",

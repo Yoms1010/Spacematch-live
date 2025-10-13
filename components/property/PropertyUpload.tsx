@@ -1,30 +1,60 @@
 'use client'
 
-import axiosClient from '@/axios-client'
+
 import HeaderBox from '@/components/HeaderBox'
 import PropertyInputField from '@/components/PropertyInputField'
 import { countryCode, nigeria } from '@/constants'
-import { getVendorProperties } from '@/lib/actions/property.action'
 import { User } from '@/types'
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
-import { Loader, Trash2 } from 'lucide-react'
-import React, { useState, SyntheticEvent, ChangeEvent, Suspense, useRef, useEffect } from 'react'
+import { Loader, Loader2, Trash2 } from 'lucide-react'
+import React, { useState, useCallback,useMemo, SyntheticEvent, ChangeEvent, Suspense, useRef, useEffect } from 'react'
 import { toast } from 'react-toastify'
+import { UploadCloud, X } from 'lucide-react';
+
+// Define the type for a single file entry in our state
+interface FileEntry {
+  file: File;
+  previewUrl: string;
+}
+
+// Custom hook to manage the state of files and ensure cleanup of Object URLs
+// We use a custom hook to correctly isolate the effect logic for cleanup.
+  const useFilePreviews = (rawFiles: File[] = []) => {
+  const [selectedFiles, setSelectedFiles] = useState<FileEntry[]>([]);
+
+  // Effect runs whenever the rawFiles array changes.
+  useEffect(() => {
+    // 1. Create a new set of FileEntry objects with fresh preview URLs
+    const newFileEntries: FileEntry[] = rawFiles.map(file => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+
+    setSelectedFiles(newFileEntries);
+
+    // 2. CRITICAL Cleanup function: Revoke all object URLs when the component unmounts
+    // or before the effect runs again (when rawFiles changes).
+    return () => {
+      newFileEntries.forEach(entry => URL.revokeObjectURL(entry.previewUrl));
+    };
+  }, [rawFiles]); // Dependency is the array of raw File objects
+
+  return selectedFiles;
+};
+
 
 
 const PropertyUpload = ({ user }: {user: User}) => {
   
   const [agent, setAgent] = useState<any>()
-  const [errors, setErrors] = useState<string>()
-  const [imgErrors, setImgErrors] = useState<string>()
   const [loading, setLoading] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAgentsLoading, setIsAgentsLoading] = useState(false);
-  const [images, setImages] = useState<File[] | undefined | FileList>()
-  const [propertyUploaded, setPropertyUploaded] = useState<boolean>(false)
-  const [iNotification, setINotification] = useState<string>("")
-  const [justUploadedProperty, setJustUploadedProperty] = useState<any>()
+  const [propertyId, setPropertyId] = useState<any>(typeof window !== "undefined" && window.localStorage.getItem("image_property_id"))
+  const [isAmenityLoading, setIsAmentyLoading] = useState(false)
+  const [document, setDocument] = useState<File | undefined | FileList | any>()
+  const [imagesUploaded, setImagesUploaded] = useState<any>()
   const [inputFields, setInputFields] = useState([{ value: '' }]);
   
   const [form, setForm] = useState<any>({
@@ -42,118 +72,153 @@ const PropertyUpload = ({ user }: {user: User}) => {
 
   const agentIdRef = useRef<any>(0)
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  // rawFiles stores the actual File objects, used as the source of truth for the custom hook
+  const [rawFiles, setRawFiles] = useState<File[] | any>([]);
+  
+  // selectedFiles is derived from rawFiles and includes the preview URLs with automatic cleanup
+  const selectedFiles = useFilePreviews(rawFiles);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  // --- Handlers ---
+
+  const handleFiles = useCallback((files: FileList) => {
+    // Convert FileList to Array and filter for only images
+    const newFilesArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    // Add new, valid files to the existing state
+    setRawFiles((prevRaw: any) => [...prevRaw, ...newFilesArray]);
+  }, []);
+
+  useEffect(() => {
+    if (rawFiles.length > 5) toast.error("You cannot upload more than 5 images")
+  }, [rawFiles])
+
+
+  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      handleFiles(event.target.files);
+      event.target.value = ''; 
+    }
+  }, [handleFiles]);
+
+
+  const handleDocumentUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement & {
       files : FileList
     }
-    setImages(target.files)
+    setDocument(target.files[0])
   }
+
   
-  const submitProperty = async () => {
-    const payLoad = {
-      developer_id : user?.whoId?.split(";")[1],
-      agent_id: agentIdRef.current.value,
-      title: form.title,
-      squareMeters: form.squareMeters,
-      city: form.city,
-      lga: form.lga,
-      state: form.state,
-      country: form.country,
-      total_cost: form.total_cost,
-      cost_per_sqm: form.cost_per_sqm,
-      description: form.description,
-      image: images
+  const onSubmitProperty = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData()
+
+      formData.append("developer_id", user?.whoId?.split(";")[1])
+      formData.append("agent_id", agentIdRef.current.value)
+      formData.append("title", form.title)
+      formData.append("squareMeters", form.squareMeters)
+      formData.append("city", form.city)
+      formData.append("lga", form.lga)
+      formData.append("state", form.state)
+      formData.append("country", form.country)
+      formData.append("total_cost", form.total_cost)
+      formData.append("cost_per_sqm", form.cost_per_sqm)
+      formData.append("description", form.description)
+      formData.append("document", document)
+
+      const payLoad = {
+        method: 'POST',
+        body: formData,
+      }
+
+      if (!agentIdRef.current.value) {
+        return toast.error("Select agent from searched result...")
+      }
+      if (user.isSubscribed === "No") return toast.error(`You are yet to subscribe.. Kindly subscribe to get instant access to your property upload.`)
+
+      //Send to Backend
+      setLoading(true)
+      const res = await fetch(`/api/property/details`, payLoad)
+
+      const response  = await res.json()
+      setLoading(false)
+      console.log(response);
+      const resp = JSON.parse(response.data)
+
+      if (resp.msg === "success") {
+        setPropertyId(resp.property_id)
+        console.log(resp.property_id)
+        
+        typeof window !== "undefined" && window.localStorage.setItem("image_property_id", resp.property_id)
+        toast.success("Property details was successfully uploaded. Kindly proceed to upload the images.")
+      }
+      
+    } catch (error) {
+      console.log(error);
+      toast.error(`${error}`)
     }
 
-    if (user.isSubscribed === "Yes") return toast.error(`You are yet to subscribe.. Kindly subscribe to get instant access to your property upload.`)
-
-    //Send to Backend
-    setLoading(true)
-    await axiosClient.post(`/property`, payLoad)
-    .then((response) => {
-      console.log(response);
-      
-      if (response.status === 201) {
-        setLoading(false)
-        setForm([])
-        justUploadedProperty(response)
-        setPropertyUploaded(true)
-        toast.success('Property info uploaded successfully. Now scroll up abit to upload the photos for the property.')
-      }
-     })
-     .catch(err => {
-      const response = err.response;
-          if (response && response.status === 422) {
-                setLoading(false)
-                toast.error("An error occurred, kindly fix it before you can proceed.")
-            if (response.data.errors) {
-                setErrors(response.data.errors)
-                console.log(response.data.errors);
-            }else{
-                setErrors("Unknown error: " + response.data.msg)
-            }
-          }else{
-              setLoading(false)
-              toast.error("Oops!! Some errors occurred.")
-          }
-    })
   }
 
   const uploadPropertyImages = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-      if(images && images.length != 5) return alert("Images has to be five");
-      if (typeof images === 'undefined') return;
-      for (let i = 0; i < images.length; i++) {
-        const file = images[i];
-        const formData = new FormData();
-         formData.append('image', file);
+      try {
+        if(rawFiles && rawFiles.length !== 5) return toast.error("Images has to be Five. Not less or more than five.");
+        if (typeof rawFiles === 'undefined') return toast.error("You are yet to select any image.");
+        for (let i = 0; i < rawFiles.length; i++) {
+          const file = rawFiles[i];
+          console.log(file);
+          
+          const formData = new FormData();
+          formData.append('property_id', propertyId);
+          formData.append('image', file);
 
+          const payLoad = {
+              method: 'POST',
+              body: formData,
+          }
           //Post to Server
           setIsLoading(true)
-          await axiosClient.post("/property/images", formData)
-          .then((data) => {
-            if (data.status === 201) {
-              setIsLoading(false)
-              setPropertyUploaded(false)
-              toast.success('Photos uploaded successfully')
-            }
-          })
-          .catch(err => {
-            const response = err.response;
-            if (response && response.status === 422) {
-                    setLoading(false)
-                    toast.error("An error occurred, kindly fix it before you can proceed.")
-                    // console.log(data);
-                if (response.data.errors) {
-                    setImgErrors(response.data.errors)
-                    console.log(response.data.errors);
-                }else{
-                    setImgErrors("Unknown error: " + response.data.msg)
-                }
-            }else{
-                setLoading(false)
-                toast.error("Oops!! Some errors occurred.")
-            }
-          });
+          const res = await fetch("/api/property/images", payLoad)
+          
+          setIsLoading(false)
+          const resp = await res.json()
+          console.log(resp);
+          // const response = JSON.parse(resp)
+          
+          if (resp.message === "successful") {
+            setImagesUploaded(true)
+            typeof window !== "undefined" && window.localStorage.removeItem("image_property_id")
+            toast.success(`${file.name} uploaded successfully`)
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(`${error}`)
       }
   }
 
   const uploadPropertyAmenities = async () => {
     try {
+      if (!propertyId) return toast.error("Please upload property details first")
       for (let i = 0; i < inputFields.length; i++) {
         const payLoad = {
-          property_id: 1,
+          property_id: propertyId,
           title: inputFields[i].value,
           active: "Yes"
         }
-        await axios.post("/api/property-amenities-upload", payLoad)
+        setIsAmentyLoading(true)
+        await axios.post("/api/property/amenities", payLoad)
         .then((data) => {
-          // setIsAgentsLoading(false)
+          setIsAmentyLoading(false)
           console.log(data);
-          toast.success("Successfully Uploaded")
+          toast.success(`${i+1}st property amenity Successfully Uploaded`)
         })
         .catch(err => {
-          // setIsAgentsLoading(false)
+          setIsAmentyLoading(false)
           console.log(err);
         })
       }
@@ -171,7 +236,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
       country: form.country,
     }
     setIsAgentsLoading(true)
-    await axios.post("/api/property-agents", payLoad)
+    await axios.post("/api/property/agents", payLoad)
       .then((data) => {
         setIsAgentsLoading(false)
         // console.log(data.data);
@@ -199,12 +264,121 @@ const PropertyUpload = ({ user }: {user: User}) => {
       setInputFields(newInputs);
     };
 
-    useEffect(() => {
-      ( async () => {
-        const property = await getVendorProperties(user?.whoId?.split(";")[1])
-        setJustUploadedProperty(property[0])
-      })()
-    }, [propertyUploaded])
+  // --- Drag and Drop Handlers ---
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (e.dataTransfer.files) {
+      handleFiles(e.dataTransfer.files);
+    }
+  }, [handleFiles]);
+
+  const handleRemoveFile = useCallback((fileToRemove: File) => {
+    // Filter out the file from the rawFiles state.
+    // The useFilePreviews hook will automatically handle revoking the old URL and creating new state.
+    setRawFiles((prevRaw: any[]) => prevRaw.filter(file => file !== fileToRemove));
+  }, []);
+  
+  // Memoized total size calculation
+  const totalSize = useMemo(() => {
+    return selectedFiles.reduce((sum, entry) => sum + entry.file.size, 0);
+  }, [selectedFiles]);
+  
+  const formatBytes = (bytes: number, decimals = 2) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  };
+  
+  // console.log(rawFiles);
+  
+  // --- Render Functions ---
+
+  const renderDragDropArea = () => (
+    <div 
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        aria-disabled={!propertyId}
+        className={`border-2 border-dashed ${isDragOver ? 'border-purple-500 bg-purple-50' : 'border-gray-300 bg-white'} rounded-xl p-8 text-center transition-colors duration-200 cursor-pointer`}
+        onClick={() => typeof window !== "undefined" && window.document.getElementById('file-upload-input')?.click()}
+    >
+      <input 
+        type="file" 
+        id="file-upload-input" 
+        multiple 
+        accept="image/jpg, image/jpeg, image/png" 
+        onChange={handleFileChange} 
+        disabled={!propertyId}
+        className="hidden" 
+      />
+      <UploadCloud className={`w-12 h-12 mx-auto ${isDragOver ? 'text-purple-600' : 'text-gray-400'}`} />
+      <p className="mt-2 text-sm text-gray-600">
+        <span className="font-semibold text-purple-600">Click to upload</span> or drag and drop images here.
+      </p>
+      <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 5MB each</p>
+    </div>
+  );
+
+
+  const renderFilePreviews = () => (
+    <div className="mt-6 space-y-4">
+      <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-800">
+              {selectedFiles.length} File{selectedFiles.length !== 1 ? 's' : ''} Selected
+          </h3>
+          <span className="text-sm font-medium text-gray-600">Total Size: {formatBytes(totalSize)}</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {selectedFiles.map((entry, index) => (
+          <div key={entry.previewUrl} className="relative w-full aspect-square rounded-xl overflow-hidden shadow-md group">
+            {/* Image Preview */}
+            <img 
+              src={entry.previewUrl} 
+              alt={`Preview ${index + 1}`} 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            
+            {/* Remove Button Overlay */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent the main div click event
+                handleRemoveFile(entry.file);
+              }}
+              type='button'
+              className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full opacity-80 hover:opacity-100 transition-opacity duration-200 shadow-lg"
+              aria-label={`Remove ${entry.file.name}`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+            
+            {/* File Info Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-1">
+                <p className="text-white text-xs truncate">{entry.file.name}</p>
+                <p className="text-gray-300 text-xs">{formatBytes(entry.file.size)}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+
+    // console.log(propertyId);
+    
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -215,7 +389,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
           />
           <div className='col-md-12 mt-[50px] bg-white p-5'>
               <div className='row'>
-                <div className='col-md-7 flex flex-col gap-5'>
+                <form onSubmit={onSubmitProperty} className='col-md-7 flex flex-col gap-5'>
 
                   <div className='row'>
                     <PropertyInputField
@@ -308,7 +482,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
                   </div>
 
                   <div className={`space-y-3 col-12 my-5`}>
-                    <div className="text-16 text-gray-600 font-semibold mb-1">Available Agent(s) Based on location</div>
+                    <div className="text-16 text-gray-600 font-semibold mb-1">Available Agent(s) Based on location (Nearest to Location)</div>
                       <div className="flex flex-col justify-start py-2 gap-4 items-start w-full border border-gray-500 h-[200px] overflow-y-scroll rounded-xl">
                           {
                             isAgentsLoading
@@ -354,7 +528,7 @@ const PropertyUpload = ({ user }: {user: User}) => {
                                   ""
                                 ))
                                 :
-                                <div className='px-4'>No Options yet (Fill all location fields)</div>
+                                <div className='px-4'>No options yet (Fill all location fields)</div>
                               }
                             </>
                           } 
@@ -386,6 +560,20 @@ const PropertyUpload = ({ user }: {user: User}) => {
                       otherStyles='col-md-6'
                     /> 
 
+                    <div className='px-3 pt-5'>
+                      <label className='mb-1 font-semibold text-16'>Property Document</label>
+                      <input 
+                        type="file"
+                        title="Property Document"
+                        multiple
+                        name='document'
+                        disabled={false}
+                        onChange={(e) => handleDocumentUpload(e)}
+                        accept='application/pdf'
+                        className='border text-gray-500 font-psemibold text-base outline-none p-2 w-full rounded-xl'
+                      /> 
+                    </div>
+
                     <div className='pt-5'>
                       <div className='mb-1 font-semibold text-16'>Property Description</div>
                       <textarea 
@@ -400,17 +588,16 @@ const PropertyUpload = ({ user }: {user: User}) => {
                   </div> 
 
                 <div className='mt-3'>
-                  {errors && <div className='bg-red-800 p-2 mt-3 rounded-md text-white shadow-lg'>
+                  {/* {errors && <div className='bg-red-800 p-2 mt-3 rounded-md text-white shadow-lg'>
                       {Object.keys(errors).map((key: any) => (
                           <p key={key}>{errors[key][0]}</p>
                       ))}
                     </div>
-                  }
+                  } */}
                   <button 
-                      type='button'
-                      onClick={submitProperty}
-                      disabled={propertyUploaded}
-                      className='bg-main-100 hover:bg-main-100 hover:shadow-lg shadow-gray-400 w-full mx-auto text-white font-semibold p-2 rounded'
+                      type='submit'
+                      disabled={propertyId}
+                      className='bg-main-100 hover:shadow-lg shadow-gray-400 w-full mx-auto text-white font-semibold p-2 rounded'
                     >
                       {
                         loading 
@@ -421,65 +608,35 @@ const PropertyUpload = ({ user }: {user: User}) => {
                       }
                   </button>
               </div>
-                </div>
+                </form>
                 <div className='col-md-5'>
                   <div className='border p-3'>
-                    <form onSubmit={uploadPropertyImages} encType='multipart/form-data'>
-                        <div className='mb-1 font-semibold text-16'>Upload Property Images</div>
+                    <form onSubmit={uploadPropertyImages} encType='multipart/form-data' className='mb-10'>
+                        <div className='mb-1 font-semibold text-16'>Upload Property Images & Document</div>
                         <div className='flex flex-col justify-center items-center space-y-2 px-3'>
                           <div className='flex flex-col justify-center items-center gap-2 min-h-[150px]'>
-                              {
-                                propertyUploaded 
+                              {/* {
+                                propertyId
                                 ?
-                                <>
-                                  {
-                                    images
-                                    ?
-                                    images && [...images].map((image) => <div className='flex flex-col items-start justify-center gap-2 text-md font-semibold'>
-                                    {image.name}
-                                    </div>)
-                                    :
-                                    <div className='flex flex-col items-center justify-center gap-2 text-md font-semibold italic text-green-600'>Kindly Upload photos for your properties</div>
-                                  }
-                                </>
+                                <> */}
+                                  {renderDragDropArea()}
+                                  {selectedFiles.length > 0 && renderFilePreviews()}
+                                {/* </>
                                 :
                                 <div className='flex flex-col items-center justify-center gap-2 text-md font-semibold italic text-gray-500'>Property Images to be uploaded here</div>
-                              }
+                              } */}
                           </div>
-                          <input 
-                            type="file"
-                            title="Property Images"
-                            multiple
-                            name='images'
-                            disabled={!propertyUploaded ? true : false}
-                            onChange={handleImageUpload}
-                            accept='image/png, image/jpg, image/jpeg, image/wepg'
-                            className='border text-gray-500 font-psemibold text-base outline-none p-2 w-full rounded-xl mt-4'
-                          /> 
-                          <div className='pt-5 w-full'>
-                            <div className='flex justify-between '>
-                              <div className='mb-1 font-semibold text-16'>Property Amenities</div>
-                              <PlusCircleIcon onClick={handleAddInput} className='size-8'/>
-                            </div>
-                            
-                          </div>
-                          {iNotification && <div className='bg-blue-500 p-2 mt-3 rounded-md text-white shadow-lg'>
-                                <p>{iNotification}</p>
-                            </div>
-                          }
-                          {imgErrors && <div className='bg-red-800 p-2 my-3 rounded-md text-white shadow-lg'>
+                        
+                          {/* {imgErrors && <div className='bg-red-800 p-2 my-3 rounded-md text-white shadow-lg'>
                               {Object.keys(imgErrors).map((key: any) => (
                                   <p key={key}>{imgErrors[key][0]}</p>
                               ))}
                             </div>
-                          }
-                          {
-                            propertyUploaded
-                            &&
+                          } */}
                             <button 
                               type='submit'
-                              // disabled={}
-                              className='btn bg-main-100 hover:bg-main-100 hover:shadow-lg shadow-gray-400 w-full mx-auto text-white font-semibold my-3 p-2'
+                              disabled={!propertyId || imagesUploaded}
+                              className='btn bg-main-100 hover:bg-main-100 hover:shadow-lg shadow-gray-400 w-full mx-auto text-white font-semibold mb-3 mt-5 p-2 '
                             >
                               {
                                 isLoading 
@@ -489,10 +646,17 @@ const PropertyUpload = ({ user }: {user: User}) => {
                                 "Upload Photos"
                               }
                             </button>
-                          }
                         </div>
                     </form>
                     <div className='flex flex-col justify-center gap-3 w-full'>
+                      <label htmlFor="">Upload Property Amenities (e.g. Swimming pool)</label>
+                      <div className='pt-3 w-full'>
+                        <div className='flex justify-between '>
+                          <div className='mb-1 font-semibold text-16'>Property Amenities</div>
+                          <PlusCircleIcon onClick={handleAddInput} className='size-8'/>
+                        </div>
+                        
+                      </div>
                       {inputFields.map((inputField, index) => (
                         <div key={index}>
                           <input 
@@ -507,7 +671,19 @@ const PropertyUpload = ({ user }: {user: User}) => {
                           )}
                         </div>
                       ))}
-                      <button onClick={uploadPropertyAmenities} className='w-full p-2 bg-main-100 text-white my-3' disabled={!propertyUploaded ? true : false}>Upload Amenities</button>
+                      <button 
+                      onClick={uploadPropertyAmenities} 
+                      className='flex justify-center items-center text-center w-full p-2 bg-main-100 text-white my-3' 
+                      disabled={!propertyId}
+                      >
+                        {
+                          isAmenityLoading
+                          ?
+                          <Loader2 className='animate-spin'/>
+                          :
+                          "Upload Amenities"
+                        }
+                      </button>
                     </div>
                   </div>
                 </div>

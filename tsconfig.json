@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Button.jsx", "components/Experience.jsx", "components/TransitionMaterial.jsx", "app/(home)/buyer/page.tsx", "server.js", "components/Hero.jsx", "components/ClientSubscription.tsx", "components/VendorSubscription.tsx", "app/homenew", "axios-client.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Button.jsx", "components/Experience.jsx", "components/TransitionMaterial.jsx", "app/(home)/buyer/page.tsx", "server.js", "components/Hero.jsx", "components/ClientSubscription.tsx", "components/VendorSubscription.tsx", "app/homenew", "axios-client.js", "app/api/property/agents"],
   "exclude": ["node_modules"]
 }
