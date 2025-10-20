@@ -247,6 +247,14 @@ declare interface SelectFieldProps {
   title3: string;
 }
 
+// Defines the props for the PropertyCard component.
+declare interface PropertyCardProps {
+    property: Property;
+    onSave: (id: number) => void;
+    onCompare: (id: number) => void;
+    onRequestInfo: (id: number) => void;
+    isComparing: boolean;
+}
 
 declare interface TransactionTableProps {
   transactions: Transaction[];

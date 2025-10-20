@@ -34,9 +34,9 @@ const nextConfig: NextConfig = {
       formats: ["image/avif", "image/webp"],
       remotePatterns: [
         {
-          protocol: "https",
-          hostname: "api.spacematch.com.ng",
-          port: "",
+          protocol: "http",
+          hostname: "127.0.0.1",
+          port: "8000",
           pathname: "/api/storage/**",
         },
       ],

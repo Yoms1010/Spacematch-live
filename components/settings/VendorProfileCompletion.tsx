@@ -58,7 +58,11 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
       const squadInstance = await new squad({
           onClose: () => console.log("Widget closed"),
           onLoad: () => console.log("Widget loaded successfully"),
-          onSuccess: (res: any) => {onSquadcoPaySuccess(res); console.log(`Linked successfully`, res);},
+          onSuccess: (res: any) => {
+            onSquadcoPaySuccess(res); 
+            console.log(`Linked successfully`, res);
+            typeof window !== 'undefined' && window.localStorage.setItem("currentView", "promotion-creation")
+          },
           key: process.env.NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
           email: requestData.email,
           amount: requestData.amount,
@@ -83,6 +87,7 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
       }
 
       const response = await axios.post("/api/squadcopay-vendor-sub", payLoad)
+
       console.log(response);
   }
 

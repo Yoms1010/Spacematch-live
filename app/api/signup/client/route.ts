@@ -18,11 +18,10 @@ export async function POST(req: Request) {
 
   try {
     // 2. Get data and secrets
-    const {name, email, code, mobile, password, business_name, developer_type, terms_and_conditions, refund_policy} = await req.json()
-    // const apiKey = process.env.THIRD_PARTY_API_KEY;
-    const apiEndpoint = `${process.env.BACKEND_DEVELOPMENT_API}/signup/developer`;
+    const {name, email, code, mobile, password, terms_and_conditions, refund_policy} = await req.json()
+    const apiEndpoint = `${process.env.BACKEND_DEVELOPMENT_API}/signup/buyer`;
 
-    if (!name || !email || !code || !mobile || !password || !business_name || !developer_type || !terms_and_conditions || !refund_policy) {
+    if (!name || !email || !code || !mobile || !password || !terms_and_conditions || !refund_policy) {
       return NextResponse.json({ error: 'Missing required fields.' });
     }
     
@@ -44,8 +43,6 @@ export async function POST(req: Request) {
         code, 
         mobile, 
         password, 
-        business_name, 
-        developer_type, 
         terms_and_conditions, 
         refund_policy
       })

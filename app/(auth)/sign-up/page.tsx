@@ -1,6 +1,7 @@
 'use client'
 
 
+import ClientSignUp from '@/components/signup/ClientSignUp';
 import VendorSignUp from '@/components/signup/VendorSignUp';
 import { countryCodes } from '@/constants';
 import { clientOccupations, legalContent} from '@/constants/main';
@@ -168,73 +169,7 @@ const SignUp = () => {
         );
       case 'client':
         return (
-          <form className="p-6 bg-white rounded-xl shadow-lg w-full max-w-3xl mt-20">
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Client Sign Up</h2>
-            <div className="space-y-4">
-              <div className='grid grid-cols-2 max-sm:grid-cols-1 gap-3'>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" placeholder="Jane Doe" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" placeholder="you@example.com" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Contact Number</label>
-                <div className="mt-1 flex rounded-md shadow-sm">
-                  <select className="p-2 border border-gray-300 rounded-l-md focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700 w-[30%]">
-                    <option value=""><input className='w-full p-2'/></option>
-                    {countryCodes.map((c, index) => (
-                      <option key={`${c.code}-${index}`} value={c.code}>{c.code} {c.name}</option>
-                    ))}
-                  </select>
-                  <input type="tel" className="flex-1 block w-full p-2 border border-gray-300 rounded-r-md focus:ring-main-100 focus:border-main-100" placeholder="e.g., 809 554 6085" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Occupation</label>
-                <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100 bg-gray-50 text-gray-700">
-                  <option value="">
-                    <input className='w-full p-2'/>
-                  </option>
-                  {clientOccupations.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-main-100 focus:border-main-100" />
-              </div>
-              <div className="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  id="agreeTerms" 
-                  name="agreeTerms" 
-                  checked={isClientAgreed} 
-                  onChange={(e) => setIsClientAgreed(e.target.checked)}
-                  className="h-4 w-4 text-main-100 border-gray-300 rounded focus:ring-main-100"/>
-                <label htmlFor="agreeTerms" className="text-sm text-gray-700">
-                  This means that you agree with the <button type="button" onClick={() => setShowLegalModal(true)} className="text-main-100 hover:underline font-semibold">SpaceMatch terms and conditions</button>
-                </label>
-              </div>
-            </div>
-            <button 
-              type="submit" 
-              disabled={!isClientAgreed}
-              className={`w-full mt-6 py-3 px-4 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-main-100 focus:ring-offset-2 transition-all duration-200 ${isClientAgreed ? 'bg-main-100 hover:bg-main-100' : 'bg-gray-400 cursor-not-allowed'}`}
-            >
-              Sign Up as Client
-            </button>
-            <p className="mt-4 text-center text-sm text-gray-600">
-              Already have an account? <a href="#" className="font-medium text-main-100 hover:underline">Sign in here</a>
-            </p>
-            <button onClick={() => setShowForm(null)} className="w-full mt-3 py-2 text-main-100 font-semibold rounded-md hover:underline">
-              Back
-            </button>
-          </form>
+          <ClientSignUp setShowForm={setShowForm} isClientAgreed={isClientAgreed} setIsClientAgreed={setIsClientAgreed} setShowLegalModal={setShowLegalModal}/>
         );
       default:
         return (
