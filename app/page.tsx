@@ -225,17 +225,18 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">How Spacematch Works</h2>
           <div className="grid md:grid-cols-3 gap-12 text-center">
             {/* Step 1 */}
-            <Link href={"#"} className="flex flex-col items-center transform transition-all duration-500 ease-in-out hover:scale-110 hover:text-main-100">
-              <div className="bg-indigo-100 rounded-full p-6 mb-6 border-2 border-dashed hover:border-l-smred-100 hover:border-r-main-100">
+            <Link href={"/property/start-coownership"} className="flex flex-col items-center hover:text-main-100">
+              <div className="bg-indigo-100 rounded-full p-6 mb-6 border border-dashed hover:border-l-smred-100 hover:border-r-main-100">
                 <svg className="w-12 h-12 text-main-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">1. Start Ownership Plan</h3>
               <p className="text-gray-600 hover:text-main-100">Connect with like-minded individuals or groups who share your vision for co-ownership. Our platform makes it easy to find compatible partners.</p>
+              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 rounded-xl border border-main-100 hover:text-main-100 font-semibold'>Proceed to planning</div>
             </Link>
             {/* Step 2 */}
-            <Link href={"/property/acquisition"} className="flex flex-col items-center">
+            <Link href={"/property/acquisition"} className="flex flex-col items-center hover:text-main-100">
               <div className="bg-indigo-100 rounded-full p-6 mb-6">
                 <svg className="w-12 h-12 text-main-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -244,7 +245,7 @@ export default async function HomePage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">2. Acquire Land</h3>
               <p className="text-gray-600">Once your group is formed, search for and acquire the perfect piece of land. We provide tools and resources to facilitate a smooth transaction.</p>
-              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 border-2 border-main-100 hover:text-main-100 font-semibold'>Proceed to Mathched Properties</div>
+              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 border border-main-100 hover:text-main-100 font-semibold rounded-xl'>Proceed to Mathched Properties</div>
             </Link>
             {/* Step 3 */}
             <Link href={"/products"} className="flex flex-col items-center hover:text-main-100">
@@ -255,7 +256,7 @@ export default async function HomePage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">3. Build Your Solution</h3>
               <p className="text-gray-600">Choose from a curated range of housing products from our verified vendors. We manage the entire fulfillment process for you.</p>
-              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 border-2 border-main-100 hover:text-main-100 font-semibold'>Proceed to Build</div>
+              <div className='w-full p-2 my-4 transform transition-all duration-500 ease-in-out hover:scale-110 rounded-xl border border-main-100 hover:text-main-100 font-semibold'>Proceed to Build</div>
             </Link>
           </div>
         </div>
