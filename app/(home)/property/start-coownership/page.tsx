@@ -1,6 +1,8 @@
 'use client'
 
+import { nigeria } from '@/constants';
 import React, { Key, useState } from 'react';
+import { toast } from 'react-toastify';
 
 // --- Data Definitions ---
 
@@ -123,6 +125,10 @@ const PageGoals = ({ onNext, userState, setUserState }: { onNext: any, userState
         }));
     };
 
+    const lgasForState = userState.goals.state
+        ? nigeria.find((s) => s.state === userState.goals.state)?.lga || []
+        : [];
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
         onNext('page-matches');
@@ -133,15 +139,48 @@ const PageGoals = ({ onNext, userState, setUserState }: { onNext: any, userState
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Define Your Goals</h2>
             <p className="text-gray-600 mb-6">Tell us what you're looking for. This helps us find the perfect partners for your project.</p>
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-700">Preferred Location (e.g., "Abuja", "Lekki, Lagos")</label>
-                    <input 
-                        type="text" 
-                        id="location" 
-                        value={userState.goals.location}
-                        onChange={handleChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-main-100 sm:text-sm p-3" 
-                    />
+                <div className='grid grid-cols-3 max-sm:grid-cols-1 gap-2'>
+                    <div>
+                        <label htmlFor="state" className="block text-sm font-medium text-gray-700">Project Type</label>
+                        <select 
+                            id="state" 
+                            value={userState.goals.state}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:outline-none sm:text-sm p-3"
+                        >
+                            <option value="">Select a state</option>
+                            {
+                                nigeria.map((item, i: Key) => (
+                                    <option value={item.state} key={i}>{item.state}</option>
+                                ))
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="lga" className="block text-sm font-medium text-gray-700">Local Government Area</label>
+                        <select 
+                            id="lga" 
+                            value={userState.goals.lga}
+                            onChange={handleChange}
+                            // disabled={!userState.goals.state}
+                            onClick={() => {!userState.goals.state && toast.warning("Select State first...")}}
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:outline-none sm:text-sm p-3"
+                        >
+                            {
+                                !userState.goals.state
+                                ?
+                                <option value="">Select LGA</option>
+                                :
+                                <>
+                                    {
+                                        lgasForState.map((item, i: Key) => (
+                                            <option value={item} key={i}>{item}</option>
+                                        ))
+                                    }
+                                </>
+                            }
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label htmlFor="projectType" className="block text-sm font-medium text-gray-700">Project Type</label>

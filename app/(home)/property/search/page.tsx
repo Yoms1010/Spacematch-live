@@ -1,9 +1,7 @@
 import AllProperties from "@/components/property/AllProperties";
 import { getAllProperties } from "@/lib/actions/property.action";
 import { PropertyItemProps } from "@/types";
-import Image from "next/image";
-import Link from "next/link";
-import { Key } from "react";
+
 
 async function SearchPage() {
 

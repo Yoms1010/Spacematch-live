@@ -1,4 +1,6 @@
+// pages/pricing.jsx
 'use client'
+
 import { useState } from 'react';
 import axios from 'axios';
 import Head from 'next/head';
@@ -11,21 +13,22 @@ export default function PricingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Define your plans. The 'amount' MUST be in kobo (NGN 5000 = 500000 kobo)
+  // --- UPDATED VALUES HERE ---
   const plans = {
     monthly: {
       id: "SPCMTH-01",
-      amount: 500000, // ₦5,000.00
+      amount: 495000, // ₦4,950.00 in kobo
       name: "Monthly Subscription"
     },
     annual: {
       id: "SPCYRL-01",
-      amount: 5000000, // ₦50,000.00
+      amount: 4995000, // ₦49,950.00 in kobo
       name: "Annual Subscription"
     }
   };
+  // --- END OF UPDATES ---
 
-  const handleSubscribe = async (plan) => {
+  const handleSubscribe = async (plan: any) => {
     setIsLoading(true);
     setError(null);
     
@@ -45,24 +48,25 @@ export default function PricingPage() {
         window.location.href = checkout_url;
       }
 
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response ? err.response.data.error : "An error occurred");
       setIsLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className='pt-28'>
       <Head>
         <title>Our Pricing</title>
       </Head>
 
       <h1>Choose Your Plan</h1>
       
+      {/* --- UPDATED DISPLAY TEXT HERE --- */}
       {/* Monthly Plan Card */}
       <div>
         <h2>Monthly Plan</h2>
-        <p>₦5,000 / month</p>
+        <p>₦4,950 / month</p>
         <button 
           onClick={() => handleSubscribe(plans.monthly)} 
           disabled={isLoading}
@@ -74,7 +78,7 @@ export default function PricingPage() {
       {/* Annual Plan Card */}
       <div>
         <h2>Annual Plan</h2>
-        <p>₦50,000 / year</p>
+        <p>₦49,950 / year</p>
         <button 
           onClick={() => handleSubscribe(plans.annual)} 
           disabled={isLoading}
@@ -82,6 +86,7 @@ export default function PricingPage() {
           {isLoading ? "Loading..." : "Subscribe Now"}
         </button>
       </div>
+      {/* --- END OF UPDATES --- */}
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>

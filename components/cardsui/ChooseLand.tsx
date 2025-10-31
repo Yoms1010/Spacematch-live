@@ -27,9 +27,6 @@ const ChooseLand = ({properties}: {properties: PropertyItemProps[]}) => {
 
   const router = useRouter()
 
-  console.log(filteredProperties);
-  
-
   useEffect(() => {
     const filterAndRender = () => {
       const filtered = properties.filter((property) => {
