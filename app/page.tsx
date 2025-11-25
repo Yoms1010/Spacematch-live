@@ -1,16 +1,22 @@
 import HomePage from '@/components/home/HomePage'
 import { getBuyerById } from '@/lib/actions/customers.actions'
 import { getAuthenticatedUser } from '@/lib/actions/user.action'
-import { ClientProps } from '@/types'
+import { ClientProps, User } from '@/types'
 import Image from 'next/image'
 import React, { Suspense } from 'react'
 
 async function page() {
 
-  const user = await getAuthenticatedUser()
-  const whoId = user ? user?.whoId.split(";")[0] : [] as any
-  const whoName = user ? user?.whoId.split(";")[1] : [] as any
-  const client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
+  const user: User = await getAuthenticatedUser()
+  let client: ClientProps | null = null
+  if (user.length > 0) {
+    const whoId = user ? user?.whoId.split(";")[0] : [] as any
+    const whoName = user ? user?.whoId.split(";")[1] : [] as any
+    client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
+  }
+
+  // console.log(user);
+
 
   return (
     <Suspense fallback={

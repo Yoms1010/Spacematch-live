@@ -52,7 +52,7 @@ declare interface User {
   client_sc_id: number | null;
   vendor_sc_id: number | null;
   name: string;
-  whoId: string;
+  whoId: { split: any } | string;
   email: string;
   email_verified_at: string | null;
   photo: string;
@@ -64,6 +64,7 @@ declare interface User {
   active: string;
   created_at: string;
   updated_at: string;
+  length: number;
 }
 
 
@@ -74,7 +75,7 @@ declare type NewUserParams = {
   password: string;
 };
 
-declare interface HomeHeaderBoxProps{
+declare interface HomeHeaderBoxProps {
   vendor?: string;
   client?: string;
   title?: string;
@@ -113,13 +114,13 @@ declare interface PropertiesProps {
   imgSource: string;
   alt: string;
   title: string;
-  location: String; 
+  location: String;
   lga: String;
   city: string;
   state: string;
   country: string;
-  cost_per_sqm: number; 
-  beds: Integer; 
+  cost_per_sqm: number;
+  beds: Integer;
   total_cost: number;
   squareMeters: Integer;
   children: React.ReactNode;
@@ -128,22 +129,22 @@ declare interface PropertiesProps {
 
 
 declare interface PropertyItemProps {
-    country: any;
-    state: any;
-    id: any; 
-    property_image: any; 
-    title: string; 
-    total_cost: number; 
-    city: String; 
-    cost_per_sqm: number;
-    bought: string; 
-    lga: String; 
-    squareMeters: any; 
-    description: string;
-    docsVerified: boolean;
-    property_image: {
-      path: string;
-    }[]
+  country: any;
+  state: any;
+  id: any;
+  property_image: any;
+  title: string;
+  total_cost: number;
+  city: String;
+  cost_per_sqm: number;
+  bought: string;
+  lga: String;
+  squareMeters: any;
+  description: string;
+  docsVerified: boolean;
+  property_image: {
+    path: string;
+  }[]
 }
 
 // declare type User = sdk.Models.Document & {
@@ -156,7 +157,7 @@ declare interface PropertyItemProps {
 // };
 
 declare interface FooterProps {
-  user : String;
+  user: String;
   logo: String;
   type: String;
   contact: String;
@@ -184,21 +185,21 @@ declare interface SiderbarProps {
   user: {
     complete: string;
   };
-  who: String; 
+  who: String;
   agentChatCount: any
   buyerChatCount: any
 }
 
 declare interface NavBarProps {
   user: String;
-  type : String
+  type: String
 }
 
 declare interface InputFieldProps {
-  title: String; 
+  title: String;
   handleChangeText: ChangeEventHandler<HTMLInputElement>;
-  value: string, 
-  otherStyles: string; 
+  value: string,
+  otherStyles: string;
   placeholder: string;
   type: string;
   required: boolean;
@@ -207,10 +208,10 @@ declare interface InputFieldProps {
 }
 
 declare interface InputFieldsProps {
-  title: String; 
+  title: String;
   handleChangeText: ChangeEventHandler<HTMLInputElement>;
-  value: string, 
-  otherStyles: string; 
+  value: string,
+  otherStyles: string;
   placeholder: string;
   type: string;
   required: boolean;
@@ -219,7 +220,7 @@ declare interface InputFieldsProps {
 }
 
 declare interface FilterPropertiesProps {
-  title: string; 
+  title: string;
   min: number;
   max: number;
   value: number;
@@ -234,26 +235,26 @@ declare interface FilterPropertiesProps {
 }
 
 declare interface SelectFieldProps {
-  title: String; 
+  title: String;
   handleChangeText: ChangeEventHandler<HTMLInputElement>;
-  value: string, 
-  otherStyles: string; 
+  value: string,
+  otherStyles: string;
   value: string;
-  value1: string; 
+  value1: string;
   value2: string;
   value3: string;
   title1: string;
-  title2: string; 
+  title2: string;
   title3: string;
 }
 
 // Defines the props for the PropertyCard component.
 declare interface PropertyCardProps {
-    property: Property;
-    onSave: (id: number, title: string) => void;
-    onCompare: (id: number) => void;
-    onRequestInfo: (id: number) => void;
-    isComparing: boolean;
+  property: Property;
+  onSave: (id: number, title: string) => void;
+  onCompare: (id: number) => void;
+  onRequestInfo: (id: number) => void;
+  isComparing: boolean;
 }
 
 declare interface TransactionTableProps {
@@ -293,57 +294,58 @@ declare interface TableProps {
   children: React.ReactNode
 }
 
-declare interface ClientProps{
-    id: number 
-    name: string
-    email: string
-    code: string
-    mobile: string
-    occupation: string
-    city: string
-    lga: string
-    state: string
-    country: string
-    ownership_type: string
-    isSubscribed: string
-    photo: string
-    photoPath: string
-    photoUrl: string
-    otp_verified: string
-    terms_and_conditions: string
-    refund_policy: string
-    is_property_verified: string
-    active: string
-    length: any
+declare interface ClientProps {
+  id: number
+  name: string
+  email: string
+  code: string
+  mobile: string
+  occupation: string
+  city: string
+  lga: string
+  state: string
+  country: string
+  ownership_type: string
+  isSubscribed: string
+  photo: string
+  photoPath: string
+  photoUrl: string
+  otp_verified: string
+  terms_and_conditions: string
+  refund_policy: string
+  is_property_verified: string
+  active: string
+  length: any;
+  data: any
 }
 
 declare interface DeveloperDataProps {
   propertyData: any;
-  userInfo: {isSubscribed: string}
+  userInfo: { isSubscribed: string }
 }
 
-declare interface DeveloperItemProps { 
-  id: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; 
-  title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; 
-  lga: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; 
-  state: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; 
-  created_at: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined | function; 
-  bought: string 
+declare interface DeveloperItemProps {
+  id: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
+  title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
+  lga: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
+  state: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
+  created_at: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined | function;
+  bought: string
 }
 
 declare interface SubscriptionPayloadProps {
-    clientId: any;
-    clientSubId: number;
-    title: string;
-    cost: string;
-    txRef: string;
-    transactionId: number;
-    paymentOption: string;
-    status: string;
+  clientId: any;
+  clientSubId: number;
+  title: string;
+  cost: string;
+  txRef: string;
+  transactionId: number;
+  paymentOption: string;
+  status: string;
 }
 
 
-interface VendorSubDataProps{
+interface VendorSubDataProps {
   id: number | string
   vendor_id: string | number,
   vendor_sc_id: number | string,
@@ -357,7 +359,7 @@ interface VendorSubDataProps{
   created_at: string
 }
 
-interface ClientSubDataProps{
+interface ClientSubDataProps {
   id: number | string;
   client_id: string | number,
   client_sc_id: number | string,
@@ -380,14 +382,14 @@ interface Column<T> {
 
 // --- Form State Initialization ---
 interface FormState {
-    propertyType: string;
-    timeline: string;
-    rooms: string;
-    furnishing: string;
-    budget: string;
-    contribution: string;
-    state: string;
-    lga: string;
-    partnerType: string;
-    sharedValues: string;
+  propertyType: string;
+  timeline: string;
+  rooms: string;
+  furnishing: string;
+  budget: string;
+  contribution: string;
+  state: string;
+  lga: string;
+  partnerType: string;
+  sharedValues: string;
 }
