@@ -128,8 +128,6 @@ const CoownershipGoalsPage = ({ client }: { client: ClientProps }) => {
                     }, 900)
                 }
             }
-
-
         } catch (error) {
             console.log(error);
         }
