@@ -49,7 +49,7 @@ export const getAuthenticatedUser = async () => {
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
       // console.log(errorText);
-      return [];
+      return { length: 0 };
     }
 
     const data = await apiResponse.json();

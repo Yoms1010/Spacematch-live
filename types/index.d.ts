@@ -52,7 +52,7 @@ declare interface User {
   client_sc_id: number | null;
   vendor_sc_id: number | null;
   name: string;
-  whoId: { split: any } | string;
+  whoId: string;
   email: string;
   email_verified_at: string | null;
   photo: string;

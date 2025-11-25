@@ -9,12 +9,13 @@ async function page() {
 
   const user: User = await getAuthenticatedUser()
   let client: ClientProps | null = null
-  if (user) {
+  if (user.length > 0) {
     const whoId = user ? user?.whoId.split(";")[1] : {} as any
     const whoName = user ? user?.whoId.split(";")[0] : {} as any
     client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
   }
 
+  // console.log(user);
   return (
     <Suspense fallback={
       <div className="h-screen flex justify-center items-center text-30 font-bold w-full">
