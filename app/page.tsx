@@ -10,11 +10,10 @@ async function page() {
   const user: User = await getAuthenticatedUser()
   let client: ClientProps | null = null
   if (user) {
-    const whoId = user?.whoId.split(";")[1]
-    const whoName = user?.whoId.split(";")[0]
+    const whoId = user ? user?.whoId.split(";")[1] : {} as any
+    const whoName = user ? user?.whoId.split(";")[0] : {} as any
     client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
   }
-
 
   return (
     <Suspense fallback={
@@ -22,7 +21,7 @@ async function page() {
         <Image src={"/logo/sm.png"} width={100} height={100} alt="logo" className="animate-pulse shadow-sm rounded-full" />
       </div>
     }>
-      <HomePage client={client ? client.data : []} />
+      <HomePage client={client ? client.data : {}} />
     </Suspense>
 
   )
