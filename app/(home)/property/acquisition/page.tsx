@@ -11,11 +11,12 @@ async function page() {
   const properties: any = await getAllProperties();
   const user: User = await getAuthenticatedUser();
   let client: ClientProps | null = null
-  if (user.length > 0) {
+  if (user !== null) {
     const whoId = user ? user?.whoId.split(";")[1] : {} as any
     const whoName = user ? user?.whoId.split(";")[0] : {} as any
     client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
   }
+
   return (
     <div>
       <MatchedPropertiesPage propertyData={properties} client={client ? client.data : []} />
