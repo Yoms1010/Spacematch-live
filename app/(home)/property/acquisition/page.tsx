@@ -11,10 +11,13 @@ async function page() {
   const properties: any = await getAllProperties();
   const user: User = await getAuthenticatedUser();
   let client: ClientProps | null = null
-  if (user !== null) {
-    const whoId = user ? user?.whoId.split(";")[1] : {} as any
-    const whoName = user ? user?.whoId.split(";")[0] : {} as any
-    client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
+  if (user?.whoId) {
+    const [whoName, rawId] = user.whoId.split(";");
+    if (whoName === "Buyer" && rawId) {
+      client = await getBuyerById(rawId);
+    } else {
+      client = await getBuyerById(0);
+    }
   }
 
   return (

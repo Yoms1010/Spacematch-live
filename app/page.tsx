@@ -9,13 +9,17 @@ async function page() {
 
   const user: User = await getAuthenticatedUser()
   let client: ClientProps | null = null
-  if (user !== null) {
-    const whoId = user ? user?.whoId.split(";")[1] : {} as any
-    const whoName = user ? user?.whoId.split(";")[0] : {} as any
-    client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
+  if (user?.whoId) {
+    const [whoName, rawId] = user.whoId.split(";");
+    if (whoName === "Buyer" && rawId) {
+      client = await getBuyerById(rawId);
+    } else {
+      client = await getBuyerById(0);
+    }
   }
 
-  // console.log(user);
+  console.log(user);
+
   return (
     <Suspense fallback={
       <div className="h-screen flex justify-center items-center text-30 font-bold w-full">
