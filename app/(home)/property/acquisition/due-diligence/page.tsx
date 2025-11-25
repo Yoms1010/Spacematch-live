@@ -7,9 +7,9 @@ import React from 'react'
 async function page() {
   const user: User = await getAuthenticatedUser()
   let client: ClientProps | null = null
-  if (user.length > 0) {
-    const whoId = user ? user?.whoId.split(";")[0] : [] as any
-    const whoName = user ? user?.whoId.split(";")[1] : [] as any
+  if (user) {
+    const whoId = user?.whoId.split(";")[1]
+    const whoName = user?.whoId.split(";")[0]
     client = await getBuyerById(whoName === "Buyer" ? whoId : 0)
   }
 

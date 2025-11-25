@@ -20,7 +20,7 @@ export async function setSessionCookie(idToken: string) {
 export const getToken = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get("ACCESS_TOKEN")?.value;
-  
+
   return token;
 }
 
@@ -30,8 +30,8 @@ export const getAuthenticatedUser = async () => {
     const apiEndpoint = `${process.env.BACKEND_DEVELOPMENT_API}/user`;
 
     if (!apiKey || !apiEndpoint) {
-        console.error("Server configuration error.");
-        return { error: 'Server configuration error.' };
+      console.error("Server configuration error.");
+      return { error: 'Server configuration error.' };
     }
 
     // 3. Prepare the request for the third-party API
@@ -49,7 +49,7 @@ export const getAuthenticatedUser = async () => {
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
       // console.log(errorText);
-      return 0;
+      return [];
     }
 
     const data = await apiResponse.json();
@@ -79,8 +79,8 @@ export const logout = async () => {
     const apiEndpoint = `${process.env.BACKEND_DEVELOPMENT_API}/logout`;
 
     if (!apiKey || !apiEndpoint) {
-        console.error("Server configuration error.");
-        return { error: 'Server configuration error.' };
+      console.error("Server configuration error.");
+      return { error: 'Server configuration error.' };
     }
 
     // 3. Prepare the request for the third-party API
@@ -98,15 +98,15 @@ export const logout = async () => {
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
       console.log(errorText);
-      
+
       return errorText
     }
 
     const removeToken = cookieStore.delete("ACCESS_TOKEN")
 
     return {
-      status: 200, 
-      message: "Logout successful", 
+      status: 200,
+      message: "Logout successful",
       data: removeToken
     };
 
