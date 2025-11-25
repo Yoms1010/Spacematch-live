@@ -188,9 +188,9 @@ export const getBuyerById = async (id: number | string) => {
   
       if (!apiResponse.ok) {
         const errorText = await apiResponse.text();
-        console.log(errorText);
+        // console.log(errorText);
         
-        return errorText
+        return null
       }
   
       const data = await apiResponse.json();

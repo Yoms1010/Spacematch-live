@@ -43,6 +43,7 @@ export const getCurrentClientChatCount = async () => {
     return { error: 'An internal server error occurred.' };
   }
 };
+
 export const getCurrentAgentChatCount = async () => {
     try {
     const cookieStore = await cookies();

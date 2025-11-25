@@ -1,7 +1,7 @@
 import { nigeria } from '@/constants';
 import { FilterPropertiesProps } from '@/types';
 import React from 'react'
-import { FaSearch } from 'react-icons/fa';
+
 
 const FilterProperties = ({title, handleRangeChange, handleSizeChange, handleLocationChange, value, min, max, minPrice, maxPrice, price}: FilterPropertiesProps) => {
   return (

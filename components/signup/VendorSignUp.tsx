@@ -91,7 +91,7 @@ function VendorSignUp({setShowForm, setShowLegalModal}: {showForm: string | null
 
           setLoading(true)
           const res = await axios.post("/api/signup/vendor", payLoad)
-          console.log(res);
+          // console.log(res);
           setLoading(false)
           const response = res;
           if (response.status === 200) {

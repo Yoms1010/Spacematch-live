@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Loader } from 'lucide-react'; // A common choice for loading spinners
 import axiosClient from '@/axios-server';
 import Analysis from '@/components/Analysis';
+import Image from 'next/image';
 
 // --- 1. Type Safety: Define interfaces for your API data ---
 // This eliminates 'any' and provides autocompletion and type checking.
@@ -44,7 +45,7 @@ interface DashboardData {
 function SuperAdmin({vendors, clients, agents, properties}: DashboardData | any) {
   // Use a single state object for all dashboard data
   const [data, setData] = useState<DashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
 
@@ -90,8 +91,8 @@ function SuperAdmin({vendors, clients, agents, properties}: DashboardData | any)
   ];
 
   return (
-    <div>
-      <div className='row charts'>
+    <main>
+      <div className='grid grid-cols-3 max-sm:grid-cols-1 charts'>
         {analysisCards.map((card) => (
           <Analysis
             key={card.title}
@@ -103,7 +104,38 @@ function SuperAdmin({vendors, clients, agents, properties}: DashboardData | any)
           />
         ))}
       </div>
-    </div>
+
+      <div className='my-10 bg-white'>
+        <div className='p-5'>
+          <h1 className='font-semibold'>Property Acquisition(s) awaiting verification</h1>
+        </div>
+
+        <div className='grid grid-cols-2 max-sm:grid-cols-1 gap-2 p-2'>
+          <div className='rounded-tr-xl rounded-bl-xl border p-2'>
+            <div className='bg-gray-100 py-2 px-1 rounded-tr-xl rounded-bl-xl h-[70px]'>
+              <div className='flex items-center space-x-3 '>
+                <div className='border rounded-bl-xl bg-white p-1'>
+                  <Image
+                    src={"/icons/checklist.png"}
+                    width={50}
+                    height={50}
+                    alt='...'
+                    className=''
+                  />
+                </div>
+                <div className='border-r-2 border-white h-full mr-5'/>
+                
+              </div>
+            </div>
+          </div>
+          <div className='rounded-tr-xl rounded-bl-xl border p-2'>
+            <div className='bg-gray-100 p-2 rounded-tr-xl rounded-bl-xl h-[70px]'>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
 

@@ -8,6 +8,7 @@ import NavigationBar from "@/components/cardsui/NavigationBar";
 import Script from "next/script";
 import { Bounce, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PreviousPage from "@/components/ui/PreviousPage";
 
 
 const poppins = Poppins({
@@ -61,6 +62,7 @@ export default async function RootLayout({
               theme="light"
               transition={Bounce}
             />
+            <PreviousPage/>
           </Suspense>
         </Provider>
         <Script src="/js/squad.min.js" strategy="afterInteractive" />

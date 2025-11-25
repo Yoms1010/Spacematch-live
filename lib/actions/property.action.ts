@@ -1,7 +1,6 @@
 "use server"
 
 import { PropertyItemProps } from "@/types";
-import { cookies } from "next/headers";
 import { getToken } from "./user.action";
 
 export const getAllProperties = async (): Promise< PropertyItemProps[]> => {

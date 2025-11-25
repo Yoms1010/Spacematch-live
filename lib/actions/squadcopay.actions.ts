@@ -1,11 +1,7 @@
 'use server'
 
-import { RequestDataProps } from "@/types";
 
-// console.log(Math.random());
-
-
-export async function squadcoPay(req: RequestDataProps){
+export async function squadcoPay(req: any){
     // URL of the API endpoint
     const apiUrl = 'https://sandbox-api-d.squadco.com/transaction/initiate';
 

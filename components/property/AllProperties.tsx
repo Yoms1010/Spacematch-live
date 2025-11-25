@@ -1,7 +1,6 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import React, { Key } from 'react'
-import Footer from '../Footer'
+
 
 function AllProperties({properties}: {properties: any}) {
   return (

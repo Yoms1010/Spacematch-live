@@ -5,7 +5,7 @@ import { useStateContext } from '@/context/ContextProvider';
 import axios from 'axios';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -15,11 +15,12 @@ const SignIn = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false)
     const [passwordShown, setPasswordShown] = useState<boolean>(false)
-    // const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
     const {setUser, token, setToken} = useStateContext()
 
+    const router = useRouter()
+
     
-  if (token) redirect("/in")
+  // if (token) redirect("/in")
 
     const handleSubmit = async (e: any) => {
       e.preventDefault();
@@ -38,15 +39,21 @@ const SignIn = () => {
             setToken(res?.data.token)
             setLoading(false)
             toast.success("Signed in successfully")
-            redirect("/in")
+            const callerRouter = typeof window != undefined && window.localStorage.getItem("callerpage")
+            if (callerRouter) {
+              router.push(""+callerRouter)
+              return  typeof window != undefined && window.localStorage.removeItem("callerpage")
+            }
+            router.push("/in")
+          }else{
+            // console.log(res);
+            const resData = res.data
+            setLoading(false)
+            if (resData.error === "An internal server error occurred.") {
+              toast.error("Error: Kindly check your connection..")
+            }
+            toast.error("Invalid credentials")
           }
-          console.log(res);
-          const resData = res.data
-          setLoading(false)
-          if (resData.error === "An internal server error occurred.") {
-            toast.error("Error: Kindly check your connection..")
-          }
-          toast.error("Invalid credentials")
           
         }else{
           console.log("Error: Kindly try again..");

@@ -1,94 +1,49 @@
-// pages/pricing.jsx
-'use client'
+import React from 'react';
 
-import { useState } from 'react';
-import axios from 'axios';
-import Head from 'next/head';
-
-// We'll assume the user's email is available (e.g., from auth)
-// For this example, we'll hard-code it.
-const userEmail = "customer@example.com"; 
-
-export default function PricingPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // --- UPDATED VALUES HERE ---
-  const plans = {
-    monthly: {
-      id: "SPCMTH-01",
-      amount: 495000, // ₦4,950.00 in kobo
-      name: "Monthly Subscription"
-    },
-    annual: {
-      id: "SPCYRL-01",
-      amount: 4995000, // ₦49,950.00 in kobo
-      name: "Annual Subscription"
-    }
-  };
-  // --- END OF UPDATES ---
-
-  const handleSubscribe = async (plan: any) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      // 1. Send the plan details to our *own* backend API route
-      const { data } = await axios.post('/api/squadco/initialize', {
-        email: userEmail,
-        amount: plan.amount,
-        planName: plan.name,
-      });
-
-      // 2. The API route returns a SquadCo checkout URL
-      const { checkout_url } = data;
-
-      // 3. Redirect the user to SquadCo's secure checkout
-      if (checkout_url) {
-        window.location.href = checkout_url;
-      }
-
-    } catch (err: any) {
-      setError(err.response ? err.response.data.error : "An error occurred");
-      setIsLoading(false);
-    }
-  };
-
+const OnboardingSlide = () => {
   return (
-    <div className='pt-28'>
-      <Head>
-        <title>Our Pricing</title>
-      </Head>
-
-      <h1>Choose Your Plan</h1>
+    // Main Container - Simulating mobile screen height
+    <div className="relative w-full h-screen max-h-[850px] overflow-hidden bg-gray-900 font-sans">
       
-      {/* --- UPDATED DISPLAY TEXT HERE --- */}
-      {/* Monthly Plan Card */}
-      <div>
-        <h2>Monthly Plan</h2>
-        <p>₦4,950 / month</p>
-        <button 
-          onClick={() => handleSubscribe(plans.monthly)} 
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading..." : "Subscribe Now"}
-        </button>
-      </div>
+      {/* 1. Background Image */}
+      <img 
+        // Replacing with a placeholder delivery rider image. 
+        // You should replace this with your actual asset path.
+        src="https://images.unsplash.com/photo-1616406432452-07bc59317520?q=80&w=1888&auto=format&fit=crop" 
+        alt="Delivery Rider" 
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
 
-      {/* Annual Plan Card */}
-      <div>
-        <h2>Annual Plan</h2>
-        <p>₦49,950 / year</p>
-        <button 
-          onClick={() => handleSubscribe(plans.annual)} 
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading..." : "Subscribe Now"}
-        </button>
-      </div>
-      {/* --- END OF UPDATES --- */}
+      {/* 2. The Gradient Overlay */}
+      {/* This creates the orange tint that fades from bottom to top */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#A0441E] via-[#A0441E]/60 to-black/20 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#c25e30] via-transparent to-transparent opacity-90" />
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* 3. Content Layer */}
+      <div className="relative z-10 flex flex-col justify-between h-full px-6 py-8">
+        
+        {/* Top: Progress Indicators */}
+        <div className="flex gap-2 mt-4">
+          {/* Active Step (Solid White) */}
+          <div className="h-1.5 flex-1 bg-white rounded-full shadow-sm"></div>
+          {/* Inactive Steps (Translucent) */}
+          <div className="h-1.5 flex-1 bg-white/30 rounded-full"></div>
+          <div className="h-1.5 flex-1 bg-white/30 rounded-full"></div>
+        </div>
+
+        {/* Bottom: Text Content */}
+        <div className="mb-8 space-y-3">
+          <h1 className="text-4xl font-bold text-white leading-tight tracking-tight">
+            Your Deliveries, <br /> Simplified.
+          </h1>
+          
+          <p className="text-white/90 text-base leading-relaxed font-medium max-w-md">
+            From bustling streets to your doorstep, send and receive packages with just a few taps. Fast, reliable, and always within reach.
+          </p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default OnboardingSlide;

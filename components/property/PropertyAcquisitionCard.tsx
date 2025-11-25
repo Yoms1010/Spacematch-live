@@ -14,24 +14,24 @@ const CheckIcon: React.FC = () => (
     </svg>
 );
 
-const PropertyAcquisitionCard: React.FC<PropertyCardProps> = ({ property, onSave, onCompare, onRequestInfo, isComparing }) => {
+const PropertyAcquisitionCard: React.FC<PropertyCardProps> = ({ property, onSave, onCompare, onRequestInfo, isComparing } : { property: any, onSave: any, onCompare: any, onRequestInfo: any, isComparing: any }) => {
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-200 ease-in-out hover:-translate-y-1.5 hover:shadow-xl">
-            <img src={property.image} alt={property.title} className="w-full h-48 object-cover" />
+            <img src={`${process.env.NEXT_PUBLIC_BACKEND_DEVELOPMENT_API}/storage/${property.property_image[0].path}`} alt={property.title} className="w-full h-48 object-cover" />
             <div className="p-5">
                 <h3 className="text-lg font-bold text-gray-800 flex items-center space-x-2">
                     <LocationIcon />
                     <span>{property.title}</span>
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">{property.location} - {property.size} sqM</p>
+                <p className="text-sm text-gray-600 mt-1">{property.city}, {property.country} - {property.squareMeters} sqM</p>
 
                 <div className="mt-4">
                     <h4 className="font-bold text-gray-800 mb-2">Match Preferences:</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
-                        {property.matchPreferences.map((pref: any, index: number) => (
+                        {property.match_preference.map((pref: any, index: number) => (
                             <li key={index}>
                                 <CheckIcon />
-                                <span>{pref}</span>
+                                <span>{pref.preferences}</span>
                             </li>
                         ))}
                     </ul>
@@ -39,7 +39,7 @@ const PropertyAcquisitionCard: React.FC<PropertyCardProps> = ({ property, onSave
 
                 <div className="mt-6 flex space-x-2">
                     <button
-                        onClick={() => onSave(property.id)}
+                        onClick={() => onSave(property.id, property.title)}
                         className="flex-1 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 transition-colors"
                     >
                         Save
@@ -51,7 +51,7 @@ const PropertyAcquisitionCard: React.FC<PropertyCardProps> = ({ property, onSave
                                 ? 'bg-blue-200 text-blue-800 cursor-not-allowed'
                                 : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                         }`}
-                        disabled={isComparing}
+                        disabled={true}
                     >
                         {isComparing ? 'Added to Compare' : 'Compare'}
                     </button>

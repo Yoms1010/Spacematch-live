@@ -250,7 +250,7 @@ declare interface SelectFieldProps {
 // Defines the props for the PropertyCard component.
 declare interface PropertyCardProps {
     property: Property;
-    onSave: (id: number) => void;
+    onSave: (id: number, title: string) => void;
     onCompare: (id: number) => void;
     onRequestInfo: (id: number) => void;
     isComparing: boolean;
@@ -293,9 +293,28 @@ declare interface TableProps {
   children: React.ReactNode
 }
 
-declare interface BuyerDataProps {
-  data: []
-  userInfo: {isSubscribed : string, plan: string}
+declare interface ClientProps{
+    id: number 
+    name: string
+    email: string
+    code: string
+    mobile: string
+    occupation: string
+    city: string
+    lga: string
+    state: string
+    country: string
+    ownership_type: string
+    isSubscribed: string
+    photo: string
+    photoPath: string
+    photoUrl: string
+    otp_verified: string
+    terms_and_conditions: string
+    refund_policy: string
+    is_property_verified: string
+    active: string
+    length: any
 }
 
 declare interface DeveloperDataProps {
@@ -357,4 +376,18 @@ interface Column<T> {
   header: string;
   accessor: keyof T;
   sortable?: boolean;
+}
+
+// --- Form State Initialization ---
+interface FormState {
+    propertyType: string;
+    timeline: string;
+    rooms: string;
+    furnishing: string;
+    budget: string;
+    contribution: string;
+    state: string;
+    lga: string;
+    partnerType: string;
+    sharedValues: string;
 }

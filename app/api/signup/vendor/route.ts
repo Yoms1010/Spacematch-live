@@ -36,8 +36,6 @@ export async function POST(req: Request) {
     };
         // 4. Make the request
       const res = await axiosClient.post(apiEndpoint, options)
-      // console.log(res);  
-
       if (res.status === 201) {
           const token = res?.data.token;
           //set and save token as api key

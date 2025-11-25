@@ -1,7 +1,8 @@
 import { countryCodes } from '@/constants';
 import { clientOccupations } from '@/constants/main';
 import axios from 'axios';
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
 
 function ClientSignUp({setShowForm, isClientAgreed, setIsClientAgreed, setShowLegalModal}: {setShowForm: any, isClientAgreed: boolean, setIsClientAgreed: React.Dispatch<React.SetStateAction<boolean>>, setShowLegalModal: React.Dispatch<React.SetStateAction<boolean|null>>}) {
     const [form, setForm] = useState({
@@ -12,31 +13,39 @@ function ClientSignUp({setShowForm, isClientAgreed, setIsClientAgreed, setShowLe
         occupation: "",
         password: ""
     })
-
+    const [isLoading, setIsLoading] = useState(false)
+    const terms_and_condition = useRef<any>(null)
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-
-        const payLoad = {
+        try {
+            const payLoad = {
             name: form.name,
             email: form.email,
             code: form.code,
             mobile: form.mobile,
             occupation: form.occupation,
-            password: form.password
+            password: form.password,
+            refund_policy: isClientAgreed && "Yes",
+            terms_and_conditions: isClientAgreed && "Yes"
         }
 
-        await axios.post("/api/signup/client", payLoad)
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-                .finally();
-        
-
-        alert('Function not implemented.');
+        const res = await axios.post("/api/signup/client", payLoad)
+            setIsLoading(false)
+            const response = res;
+            if (response.status === 200) {
+                if(response.data.status === 201){
+                    toast.success("Account successfully created. Redirecting...")
+                    // router.push("/in/settings")
+                }else if (response.data.errorData.status === 422) {
+                    toast.error("That email has already been taken")
+                }else{
+                    toast.error("Kindly check your network connection")
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
   return (

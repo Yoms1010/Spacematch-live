@@ -1,7 +1,7 @@
 
 import { getToken } from "./user.action";
 
-export const getClientSubscriptionDetails = async (): Promise< any> => {
+export const getClientSubscriptionDetails = async () => {
   // 3. Prepare the request for the third-party API
       const options = {
         method: 'GET',
@@ -12,7 +12,7 @@ export const getClientSubscriptionDetails = async (): Promise< any> => {
       };
    const res = await fetch(`${process.env.BACKEND_DEVELOPMENT_API}/client-subscription-cards`, options);
 
-   console.log(res);
+  //  console.log(res);
    
   if (!res.ok) {
     // This will be caught by the nearest error.tsx file

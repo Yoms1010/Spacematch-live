@@ -56,6 +56,12 @@ export const superAdminSidebarLinks = [
     who: "Developer"
   },
   {
+    imgURL: "/icons/checklist.png",
+    route: "/in/verifications",
+    label: "Verifications",
+    who: "Developer"
+  },
+  {
     imgURL: "/icons/gear.png",
     route: "/in/settings",
     label: "Settings",
