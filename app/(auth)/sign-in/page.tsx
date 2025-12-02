@@ -38,7 +38,7 @@ const SignIn = () => {
             setUser(res?.data.user)
             setToken(res?.data.token)
             setLoading(false)
-            toast.success("Signed in successfully")
+            toast.success("Signed in successfully.. Please hold, you are being redirected...")
             const callerRouter = typeof window != undefined && window.localStorage.getItem("callerpage")
             if (callerRouter) {
               router.push(""+callerRouter)

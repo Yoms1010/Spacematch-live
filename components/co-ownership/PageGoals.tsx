@@ -32,12 +32,10 @@ const PageGoals = ({ onNext, userState, setUserState, user, client }: { onNext: 
         : [];
 
     const handleSubmit = async (e: any) => {
-
         e.preventDefault();
-
         try {
             if (client === null) {
-                if (confirm("You are yet to login as a client. Kindly login to your client account..")) {
+                if (confirm("To access the information, you need to sign in as a client.")) {
                     typeof window != undefined && window.localStorage.setItem("callerpage", "/property/start-coownership")
                     return router.replace("/sign-in")
                 }

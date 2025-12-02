@@ -1,9 +1,6 @@
 "use server"
 
-
-import axiosClient from "@/axios-server";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 // Session duration (1 week)
 const SESSION_DURATION = 60 * 60 * 24 * 7;
