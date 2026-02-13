@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 // This is the main component for the Next.js page, orchestrating the entire vendor application flow.
 // In a real-world Next.js application, each of these "views" would likely be a separate page
 // in the `pages` directory, and navigation would be handled by the Next.js router.
-const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any}) => {
+const VendorProfileCompletion = ({ userData, vendor }: { userData: any, vendor: any }) => {
   const [currentView, setCurrentView] = useState(typeof window !== 'undefined' ? window.localStorage.getItem("currentView") : 'profile-setup');
   const [user, setUser] = useState(null); // Represents the logged-in user
   const [isVerified, setIsVerified] = useState(false);
@@ -17,9 +17,9 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentCampaign, setCurrentCampaign] = useState(null);
 
-  const {id, email} = vendor.data;
+  const { id, email } = vendor.data;
   // console.log(vendor.data);
-  
+
 
   // In a real application, this would be a real-time listener from Firebase Authentication and Firestore.
   useEffect(() => {
@@ -39,7 +39,7 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
       case "Standard":
         onSquadcoPay("Standard", 10000, "NGN")
         break;
-    
+
       default:
         break;
     }
@@ -48,47 +48,45 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
 
   const onSquadcoPay = async (tier: string, price: number, currency: string) => {
     const requestData = {
-        email: email, 
-        amount: price*100,
-        currency,
-      }
-      
-      setIsLoading(true)
-      //@ts-expect-error
-      const squadInstance = await new squad({
-          onClose: () => console.log("Widget closed"),
-          onLoad: () => console.log("Widget loaded successfully"),
-          onSuccess: (res: any) => {
-            onSquadcoPaySuccess(res); 
-            console.log(`Linked successfully`, res);
-            typeof window !== 'undefined' && window.localStorage.setItem("currentView", "promotion-creation")
-          },
-          key: process.env.NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
-          email: requestData.email,
-          amount: requestData.amount,
-          currency_code: requestData.currency
-      });
-      squadInstance.setup();
-      squadInstance.open();
-      setIsLoading(false)
+      email: email,
+      amount: price * 100,
+      currency,
+    }
+
+    setIsLoading(true)
+    //@ts-expect-error
+    const squadInstance = await new squad({
+      onClose: () => console.log("Widget closed"),
+      onLoad: () => console.log("Widget loaded successfully"),
+      onSuccess: (res: any) => {
+        onSquadcoPaySuccess(res);
+        console.log(`Linked successfully`, res);
+        typeof window !== 'undefined' && window.localStorage.setItem("currentView", "promotion-creation")
+      },
+      key: process.env.NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
+      email: requestData.email,
+      amount: requestData.amount,
+      currency_code: requestData.currency
+    });
+    squadInstance.setup();
+    squadInstance.open();
+    setIsLoading(false)
   }
-  
+
   const onSquadcoPaySuccess = async (res: any) => {
-      const payLoad = {
-          vendor_id: id,
-          vendor_sc_id: 2,
-          title: "Standard",
-          amount: res.amount/100,
-          currency: res.currency_code,
-          transaction_ref: res.transaction_ref,
-          payment_option: "card",
-          status: "successful",
-          active: "Yes"
-      }
+    const payLoad = {
+      vendor_id: id,
+      vendor_sc_id: 2,
+      title: "Standard",
+      amount: res.amount / 100,
+      currency: res.currency_code,
+      transaction_ref: res.transaction_ref,
+      payment_option: "card",
+      status: "successful",
+      active: "Yes"
+    }
 
-      const response = await axios.post("/api/squadcopay-vendor-sub", payLoad)
-
-      console.log(response);
+    const response = await axios.post("/api/squadcopay-vendor-sub", payLoad)
   }
 
   const handleCreatePromotion = (campaignData: any) => {
@@ -101,13 +99,13 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
   const renderView = () => {
     switch (currentView) {
       case 'profile-setup':
-        return <ProfileSetupPage setCurrentView={setCurrentView} vendor={vendor}/>;
+        return <ProfileSetupPage setCurrentView={setCurrentView} vendor={vendor} />;
       case 'verification-pending':
         return <VerificationPendingPage setCurrentView={setCurrentView} />;
       case 'dashboard':
         return <DashboardPage user={user} isVerified={isVerified} isSubscribed={isSubscribed} setCurrentView={setCurrentView} />;
       case 'subscription':
-        return <SubscriptionPage onSubscribe={handleSubscription} isLoading={isLoading}/>;
+        return <SubscriptionPage onSubscribe={handleSubscription} isLoading={isLoading} />;
       case 'promotion-creation':
         return <PromotionCreationPage onCreate={handleCreatePromotion} />;
       case 'analytics':
@@ -127,7 +125,7 @@ const VendorProfileCompletion = ({userData, vendor}: {userData: any, vendor: any
 };
 
 
-const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
+const OnboardingPage = ({ setCurrentView }: { setCurrentView: any }) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4 text-purple-800">Welcome to the Vendor Portal!</h2>
     <p className="text-gray-600 mb-6">
@@ -145,7 +143,7 @@ const OnboardingPage = ({ setCurrentView }: { setCurrentView: any}) => (
   </div>
 );
 
-const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, vendor: any}) => {
+const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, vendor: any }) => {
 
   const [step, setStep] = useState(1);
   const [docError, setDocError] = useState({
@@ -168,17 +166,17 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     bankName: '',
   });
   const [isLoading, setIsLoading] = useState(false)
-  const {acc_name, acc_number, bank_name} = vendor.bank_details || {acc_name: undefined, acc_number: undefined, bank_name: undefined};
-  const { id, business_name, business_email, business_address, business_phone, business_reg_no, business_type,service_offering, nin, business_reg_doc, profile_photo} = vendor.data;
+  const { acc_name, acc_number, bank_name } = vendor.bank_details || { acc_name: undefined, acc_number: undefined, bank_name: undefined };
+  const { id, business_name, business_email, business_address, business_phone, business_reg_no, business_type, service_offering, nin, business_reg_doc, profile_photo } = vendor.data;
 
 
   const handleNextStep = () => {
     if (step > 1) {
       if (!formData.nin && !nin) {
-        return setDocError({...docError, ninError: "Your NIN is needed, kindly fill.."})
+        return setDocError({ ...docError, ninError: "Your NIN is needed, kindly fill.." })
       }
       if (!formData.bizRegDoc && !business_reg_doc) {
-        return setDocError({...docError, bizRegError: "Your business registration is needed, kindly fill.."})
+        return setDocError({ ...docError, bizRegError: "Your business registration is needed, kindly fill.." })
       }
     }
 
@@ -196,8 +194,8 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  async function onNinVerificaion(e: any){
-    setFormData({...formData, nin: e.target.value})
+  async function onNinVerificaion(e: any) {
+    setFormData({ ...formData, nin: e.target.value })
 
     const payLoad = {
       nin: formData.nin,
@@ -237,9 +235,9 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
 
       // onSubmit(formsData);
       const payLoad = {
-          method: 'POST',
-          body: formsData,
-        }
+        method: 'POST',
+        body: formsData,
+      }
       setIsLoading(true)
       toast.warning('Submitting profile for verification...');
       const res = await fetch(`/api/settings/vendor`, payLoad)
@@ -253,7 +251,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
           setCurrentView('verification-pending')
           typeof window != undefined && window.localStorage.setItem("currentView", 'verification-pending')
         }, 1000)
-      }else{
+      } else {
         toast.error("An error occurred")
       }
     } catch (error) {
@@ -290,7 +288,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="tel"
               name="businessPhone"
-              defaultValue={business_phone||formData.businessPhone}
+              defaultValue={business_phone || formData.businessPhone}
               onChange={handleChange}
               placeholder="Business Phone Number"
               required
@@ -317,7 +315,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             <input
               type="text"
               name="businessType"
-              defaultValue={business_type||formData.businessType}
+              defaultValue={business_type || formData.businessType}
               onChange={handleChange}
               placeholder="Business Type"
               required
@@ -325,7 +323,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
             />
             <textarea
               name="serviceOfferings"
-              defaultValue={service_offering||formData.serviceOfferings}
+              defaultValue={service_offering || formData.serviceOfferings}
               onChange={handleChange}
               placeholder="Service Offerings"
               required
@@ -364,7 +362,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 name="bizRegDoc"
                 // value={formData.bizRegDoc || business_reg_doc}
                 accept="image/*"
-                onChange={(e: any) => setFormData({...formData, bizRegDoc: e.target.files[0]})}
+                onChange={(e: any) => setFormData({ ...formData, bizRegDoc: e.target.files[0] })}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
@@ -377,7 +375,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
                 name="profilePhoto"
                 // value={formData.profilePhoto || profile_photo}
                 accept="image/*"
-                onChange={(e: any) => setFormData({...formData, profilePhoto: e.target.files[0]})}
+                onChange={(e: any) => setFormData({ ...formData, profilePhoto: e.target.files[0] })}
                 required
                 className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
@@ -443,13 +441,13 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
               >
                 {
                   isLoading
-                  ?
-                  <Loader className='animate-spin'/>
-                  :
-                  <div className=' flex items-center justify-center space-x-2'>
-                    <span role="img" aria-label="upload">📤</span>
-                    <span>Submit for Verification</span>
-                  </div>
+                    ?
+                    <Loader className='animate-spin' />
+                    :
+                    <div className=' flex items-center justify-center space-x-2'>
+                      <span role="img" aria-label="upload">📤</span>
+                      <span>Submit for Verification</span>
+                    </div>
                 }
               </button>
             </div>
@@ -472,7 +470,7 @@ const ProfileSetupPage = ({ setCurrentView, vendor }: { setCurrentView: any, ven
 };
 
 
-const VerificationPendingPage = ({ setCurrentView}: { setCurrentView: any}) => (
+const VerificationPendingPage = ({ setCurrentView }: { setCurrentView: any }) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4 text-yellow-600">Verification Pending</h2>
     <p className="text-gray-600 mb-6">Thank you for submitting your documents. We are currently reviewing your information. This may take a few moments.</p>
@@ -560,7 +558,7 @@ const DashboardPage = ({ user, isVerified, isSubscribed, setCurrentView }: { use
   );
 };
 
-const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoading: boolean}) => (
+const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoading: boolean }) => (
   <div className="text-center p-8">
     <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
     <p className="text-gray-600 mb-8">Unlock powerful features to grow your business.</p>
@@ -577,13 +575,13 @@ const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoad
         <button onClick={() => onSubscribe('Standard')} className="mt-6 w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition-colors">
           {
             isLoading
-            ?
-            <Loader className='animate-spin'/>
-            :
-            <div>
-              <span role="img" aria-label="buy">🛒</span>
-              <span>Choose Standard</span>
-            </div>
+              ?
+              <Loader className='animate-spin' />
+              :
+              <div>
+                <span role="img" aria-label="buy">🛒</span>
+                <span>Choose Standard</span>
+              </div>
           }
         </button>
       </div>
@@ -600,13 +598,13 @@ const SubscriptionPage = ({ onSubscribe, isLoading }: { onSubscribe: any, isLoad
         <button onClick={() => onSubscribe('Enterprise')} className="mt-6 w-full bg-purple-800 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-900 transition-colors">
           {
             isLoading
-            ?
-            <Loader className='animate-spin'/>
-            :
-            <div>
-             <span role="img" aria-label="contact">📞</span>
-            <span>Contact Us</span>
-            </div>
+              ?
+              <Loader className='animate-spin' />
+              :
+              <div>
+                <span role="img" aria-label="contact">📞</span>
+                <span>Contact Us</span>
+              </div>
           }
         </button>
       </div>
