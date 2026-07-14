@@ -3,15 +3,21 @@
 import BrowseTerratribeMatchesPage from '@/components/solutions/terra-tribe/BrowseTerratribeMatchesPage'
 import { useStateContext } from '@/context/ContextProvider'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function page() {
 
     const router = useRouter()
     const {terratribeMatches} = useStateContext()
 
+    useEffect(() => {
+        if (!terratribeMatches) {
+            router.push("/products/terra-tribe/co-ownership-goals/")
+        }
+    }, [terratribeMatches, router])
+
     if (!terratribeMatches) {
-        return router.push("/products/terra-tribe/co-ownership-goals/")
+        return null
     }
 
   return (
