@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
-
 const nextConfig: NextConfig = {
-  /* config options here */
-  // output: "export",
   reactStrictMode: false,
   trailingSlash: true,
   transpilePackages: ['three'],
@@ -12,7 +9,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "api.spacematch.com",
+        hostname: "api.teechng.com",
         port: "",
         pathname: "/api/storage/**",
       },
