@@ -36,6 +36,9 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+.env
+.env.local
+.env*.local
 next-env.d.ts
 
 # possible large file
