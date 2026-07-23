@@ -11,7 +11,7 @@ const allowedOrigins = [
   'http://127.0.0.1:8000',
   'https://www.spacematch-beta.vercel.app',
   'https://www.spacematch.com.ng',
-  'https://api.spacematch.com.ng'
+  'https://api.spacematch.com.ng',
   'https://spacematch.com.ng'
 ];
 
@@ -24,7 +24,7 @@ const allowedDevOrigins = [
   'http://127.0.0.1:8000',
   'https://spacematch-beta.vercel.app',
   'https://www.spacematch.com.ng',
-  'https://api.spacematch.com.ng'
+ 'https://api.spacematch.com.ng',
   'https://spacematch.com.ng',
 ];
 
