@@ -295,7 +295,7 @@ export default async function HomePage({ client }: { client: ClientProps }) {
         <div className="container mx-auto px-6">
           <div className="md:flex items-center justify-between">
             <div className="md:w-1/2 md:pr-12 mb-10 md:mb-0">
-              <img src="/community.jpeg" alt="Happy family in front of their house" className="rounded-lg shadow-xl w-full" />
+              <img src="/solutions/community.jpeg" alt="Happy family in front of their house" className="rounded-lg shadow-xl w-full" />
             </div>
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Building a Community, Not Just Houses</h2>
