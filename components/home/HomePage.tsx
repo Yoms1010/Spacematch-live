@@ -284,8 +284,7 @@ export default async function HomePage({ client }: { client: ClientProps }) {
               </Link>
             </div>
             <div className="md:w-1/2">
-              <img src="/seemless.jpeg" alt="Modern house with a manicured lawn" className="rounded-lg shadow-xl w-full" />
-            </div>
+<img src="/solutions/sol-2.jpg" alt="Modern house with a manicured lawn" className="rounded-lg shadow-xl w-full" />            </div>
           </div>
         </div>
       </section>
