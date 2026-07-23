@@ -12,6 +12,7 @@ const allowedOrigins = [
   'https://www.spacematch-beta.vercel.app',
   'https://www.spacematch.com.ng',
   'https://api.spacematch.com.ng'
+  'https://spacematch.com.ng'
 ];
 
 // Add your development origins here.
@@ -24,7 +25,9 @@ const allowedDevOrigins = [
   'https://spacematch-beta.vercel.app',
   'https://www.spacematch.com.ng',
   'https://api.spacematch.com.ng'
+  'https://spacematch.com.ng',
 ];
+
 
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
