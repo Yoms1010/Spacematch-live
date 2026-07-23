@@ -83,7 +83,7 @@ const PricingCard = ({ plan, children, client, isLoading, setIsLoading, router}:
                 onClose: () => console.log("Widget closed"),
                 onLoad: () => console.log("Widget loaded successfully"),
                 onSuccess: (res: any) => {onSquadcoPaySuccess(res, item); console.log(`Linked successfully`, res);},
-                key: process.env.NEXT_PUBLIC_SQUADCO_SANDBOX_API_KEY,  //NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
+                key: process.env.NEXT_PUBLIC_SQUADCO_PAY_API_KEY,
                 email: requestData.email,
                 amount: requestData.amount,
                 currency_code: requestData.currency
